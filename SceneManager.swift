@@ -10,10 +10,22 @@ import SwiftUI
 import SpriteKit
 
 class SceneManager: ObservableObject {
+    var currentStageIndex: Int = 0 {
+        didSet {
+            let newStage = StageBank.shared.stageList.first { stage in
+                stage.index == currentStageIndex
+            }
+            if let stage = newStage {
+                currentStage = stage
+            }
+        }
+    }
+    
     var beeScene: BeeScene
+    var currentStage: Stage = StageBank.shared.stageList[0]
     
     init() {
-        self.beeScene = SKScene(fileNamed: "Scene1") as! BeeScene
+        self.beeScene = currentStage.beeScene
         beeScene.size = CGSize(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)
         beeScene.anchorPoint = CGPoint(x: 0.5, y: 0.5)
         beeScene.scaleMode = .aspectFit

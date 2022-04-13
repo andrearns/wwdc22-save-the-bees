@@ -4,6 +4,7 @@ import SpriteKit
 struct ContentView: View {
     @StateObject var sceneManager = SceneManager()
     @State var showHint: Bool = true
+    @State var dialogIndex = 0
     
     var spriteView: SpriteView?
     var radarWidth: CGFloat {
@@ -17,21 +18,10 @@ struct ContentView: View {
             }
             VStack {
                 Spacer()
-                VStack {
-                    Text("Use o acelerômetro do celular para controlar a velocidade e direção da abelha")
-                        .padding()
-                        .foregroundColor(Color.white)
-                        .font(.system(size: 18, weight: .semibold, design: .rounded))
-                }
-                .background(Color.black)
-                .cornerRadius(16)
-                .padding()
-                .opacity(showHint ? 1 : 0)
-                .onTapGesture {
-                    withAnimation {
-                        showHint = false
+                DialogView(dialog: sceneManager.currentStage.dialogList[dialogIndex])
+                    .onTapGesture {
+                        dialogIndex += 1
                     }
-                }
             }
             VStack {
                 HStack {
