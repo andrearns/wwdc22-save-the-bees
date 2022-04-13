@@ -56,9 +56,12 @@ class BeeScene: SKScene, SKPhysicsContactDelegate {
     
     func spawnNewFlower(xPosition: CGFloat, yPosition: CGFloat, hasPollen: Bool, scale: CGFloat) {
         let newFlower = FlowerNode(xPosition: xPosition, yPosition: yPosition, hasPollen: hasPollen, scale: scale)
+        newFlower.setScale(0)
         self.addChild(newFlower)
-        // To do: make SKAction of the flower growing
         
+        // SKAction to make the flower growing
+        let action = SKAction.scale(to: 1, duration: 1)
+        newFlower.run(action)
     }
     
     func spawnNewClosedFlower(xPosition: CGFloat, yPosition: CGFloat) {
