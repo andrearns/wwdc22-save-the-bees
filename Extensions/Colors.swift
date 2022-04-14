@@ -11,4 +11,5 @@ import SwiftUI
 extension Color {
     static let beeBrown = Color(red: 46/255, green: 12/255, blue: 0)
     static let beeYellow = Color(red: 249/255, green: 165/255, blue: 5/255)
+    static let beeRed = Color(red: 255/255, green: 0/255, blue: 84/255)
 }

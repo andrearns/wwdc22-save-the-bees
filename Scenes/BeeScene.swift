@@ -30,7 +30,7 @@ class BeeScene: SKScene, SKPhysicsContactDelegate {
         
         self.bee!.position = CGPoint(x: frame.midX, y: frame.midY)
         
-        spawnNewFlower(xPosition: getRandomXPosition(minimumXPosition: -600, maximumXPosition: 600), yPosition: getRandomYPosition(minimumYPosition: -600, maximumYPosition: 600), hasPollen: true, scale: 1)
+        spawnNewFlower(xPosition: getRandomXPosition(minimumXPosition: -600, maximumXPosition: 600), yPosition: getRandomYPosition(minimumYPosition: -600, maximumYPosition: 600), hasPollen: true, scale: 1, categoryBitMask: UInt32(4))
         spawnNewClosedFlower(xPosition: getRandomXPosition(minimumXPosition: -600, maximumXPosition: 600), yPosition: getRandomYPosition(minimumYPosition: -600, maximumYPosition: 600))
     }
     
@@ -49,39 +49,13 @@ class BeeScene: SKScene, SKPhysicsContactDelegate {
         cam.position = position
     }
     
+    // MARK: - Accelerometer
     func setupAccelerometer() {
         self.motionManager.startAccelerometerUpdates()
         self.motionManager.accelerometerUpdateInterval = 0.1
     }
     
-    func spawnNewFlower(xPosition: CGFloat, yPosition: CGFloat, hasPollen: Bool, scale: CGFloat) {
-        let newFlower = FlowerNode(xPosition: xPosition, yPosition: yPosition, hasPollen: hasPollen, scale: scale)
-        newFlower.setScale(0)
-        self.addChild(newFlower)
-        
-        // SKAction to make the flower growing
-        let action = SKAction.scale(to: 1, duration: 1)
-        newFlower.run(action)
-    }
-    
-    func spawnNewClosedFlower(xPosition: CGFloat, yPosition: CGFloat) {
-        let newClosedFlower = ClosedFlowerNode(xPosition: xPosition, yPosition: yPosition)
-        self.addChild(newClosedFlower)
-    }
-    
-    func getRandomXPosition(minimumXPosition: CGFloat, maximumXPosition: CGFloat) -> CGFloat {
-        CGFloat.random(in: minimumXPosition...maximumXPosition)
-    }
-    
-    func getRandomYPosition(minimumYPosition: CGFloat, maximumYPosition: CGFloat) -> CGFloat {
-        CGFloat.random(in: minimumYPosition...maximumYPosition)
-    }
-    
-    func getRandomScale() -> CGFloat {
-        CGFloat.random(in: (0.5)...(1.5))
-    }
-    
-    // Collisions
+    // MARK: - Collisions
     func didBegin(_ contact: SKPhysicsContact) {
         var firstBody: SKPhysicsBody
         var secondBody: SKPhysicsBody
@@ -99,7 +73,6 @@ class BeeScene: SKScene, SKPhysicsContactDelegate {
             print("Collect pollen")
             // Remove pollen node from contacted flower
             if let flowerNode = secondBody.node as? FlowerNode {
-                flowerNode.removePollenNode()
                 flowerNode.hasPollen = false
             }
             
@@ -116,20 +89,51 @@ class BeeScene: SKScene, SKPhysicsContactDelegate {
                 
                 if let closedFlowerNode = secondBody.node as? ClosedFlowerNode {
                     closedFlowerNode.texture = SKTexture(imageNamed: "redFlowerSprite")
-                    closedFlowerNode.physicsBody?.categoryBitMask = UInt32(4)
+                    closedFlowerNode.physicsBody?.categoryBitMask = UInt32(16)
                 }
                 
                 growFlowersAfterPollination(xPosition: secondBody.node!.position.x, yPosition: secondBody.node!.position.y)
+                
+                spawnNewFlower(xPosition: getRandomXPosition(minimumXPosition: -600, maximumXPosition: 600), yPosition: getRandomYPosition(minimumYPosition: -600, maximumYPosition: 600), hasPollen: true, scale: 1, categoryBitMask: UInt32(4))
+                spawnNewClosedFlower(xPosition: getRandomXPosition(minimumXPosition: -600, maximumXPosition: 600), yPosition: getRandomYPosition(minimumYPosition: -600, maximumYPosition: 600))
             }
         }
     }
     
+    // MARK: - Flowers
     func growFlowersAfterPollination(xPosition: CGFloat, yPosition: CGFloat) {
-        for _ in 0...5 {
+        for _ in 0...6 {
             let randomCloseXPosition = getRandomXPosition(minimumXPosition: xPosition - 100, maximumXPosition: xPosition + 100)
             let randomCloseYPosition = getRandomYPosition(minimumYPosition: yPosition - 100, maximumYPosition: yPosition + 100)
             let randomScale = getRandomScale()
-            spawnNewFlower(xPosition: randomCloseXPosition, yPosition: randomCloseYPosition, hasPollen: false, scale: randomScale)
+            spawnNewFlower(xPosition: randomCloseXPosition, yPosition: randomCloseYPosition, hasPollen: false, scale: randomScale, categoryBitMask: UInt32(16))
         }
+    }
+    
+    func spawnNewFlower(xPosition: CGFloat, yPosition: CGFloat, hasPollen: Bool, scale: CGFloat, categoryBitMask: UInt32) {
+        let newFlower = FlowerNode(xPosition: xPosition, yPosition: yPosition, hasPollen: hasPollen, scale: scale, categoryBitMask: categoryBitMask)
+        newFlower.setScale(0)
+        self.addChild(newFlower)
+        
+        // SKAction to make the flower grow
+        let action = SKAction.scale(to: scale, duration: 1)
+        newFlower.run(action)
+    }
+    
+    func spawnNewClosedFlower(xPosition: CGFloat, yPosition: CGFloat) {
+        let newClosedFlower = ClosedFlowerNode(xPosition: xPosition, yPosition: yPosition)
+        self.addChild(newClosedFlower)
+    }
+    
+    func getRandomXPosition(minimumXPosition: CGFloat, maximumXPosition: CGFloat) -> CGFloat {
+        CGFloat.random(in: minimumXPosition...maximumXPosition)
+    }
+    
+    func getRandomYPosition(minimumYPosition: CGFloat, maximumYPosition: CGFloat) -> CGFloat {
+        CGFloat.random(in: minimumYPosition...maximumYPosition)
+    }
+    
+    func getRandomScale() -> CGFloat {
+        CGFloat.random(in: (0.8)...(1.2))
     }
 }
