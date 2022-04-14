@@ -29,5 +29,8 @@ class SceneManager: ObservableObject {
         beeScene.size = CGSize(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)
         beeScene.anchorPoint = CGPoint(x: 0.5, y: 0.5)
         beeScene.scaleMode = .aspectFit
+        
+        // Only for debug
+        self.beeScene.view?.showsPhysics = true
     }
 }

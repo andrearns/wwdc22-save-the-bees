@@ -12,4 +12,5 @@ struct Stage {
     var index: Int
     var beeScene: BeeScene
     var dialogList: [Dialog]
+    var flowerCount: Int
 }

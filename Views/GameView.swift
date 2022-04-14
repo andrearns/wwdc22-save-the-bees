@@ -1,14 +1,17 @@
 import SwiftUI
 import SpriteKit
 
-struct ContentView: View {
+struct GameView: View {
     @StateObject var sceneManager = SceneManager()
     @State var showHint: Bool = true
     @State var dialogIndex = 0
+    @State var isRadarOn: Bool = true
+    @State var isDialogOn: Bool = false
+    @State var isDangerous: Bool = true
     
     var spriteView: SpriteView?
     var radarWidth: CGFloat {
-        return UIScreen.main.bounds.width / 4
+        return UIScreen.main.bounds.width / 3
     }
     
     var body: some View {
@@ -19,6 +22,7 @@ struct ContentView: View {
             VStack {
                 Spacer()
                 DialogView(dialog: sceneManager.currentStage.dialogList[dialogIndex])
+                    .opacity(isDialogOn ? 1 : 0)
                     .onTapGesture {
                         dialogIndex += 1
                     }
@@ -26,18 +30,16 @@ struct ContentView: View {
             VStack {
                 HStack {
                     Spacer()
-                    ZStack {
-                        Circle()
-                            .foregroundColor(Color.black)
-                            .frame(width: radarWidth, height: radarWidth)
-                            .padding()
-                        Text("Radar")
-                            .foregroundColor(.white)
-                    }
-                    .padding(.top)
+                    Image(isDangerous ? "dangerRadarSprite" : "radarFrameSprite")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: radarWidth, height: radarWidth)
+                        .padding()
+                        .padding(.top)
                 }
                 Spacer()
             }
+            .opacity(isRadarOn ? 1 : 0)
         }
         .ignoresSafeArea()
         .statusBar(hidden: true)

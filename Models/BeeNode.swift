@@ -59,8 +59,9 @@ class BeeNode: SKSpriteNode {
         addChild(invisibleParent)
     }
     
-    func removePollenNode() {
+    func removePollen() {
         self.pollenNode.alpha = 0
+        self.hasPollen = false
     }
     
     required init?(coder aDecoder: NSCoder) {
