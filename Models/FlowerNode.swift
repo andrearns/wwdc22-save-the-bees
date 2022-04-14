@@ -27,10 +27,9 @@ class FlowerNode: SKSpriteNode {
         pollenNode = SKShapeNode(rect: CGRect(x: 0, y: 0, width: 16, height: 16), cornerRadius: 8)
         pollenNode.fillColor = UIColor.red
         pollenNode.strokeColor = UIColor.red
-        pollenNode.position.x = xPosition
-        pollenNode.position.y = yPosition
+        pollenNode.position.x = 40
+        pollenNode.position.y = 40
         pollenNode.physicsBody?.affectedByGravity = false
-        pollenNode.setScale(scale)
         
         super.init(texture: SKTexture(imageNamed: "redFlowerSprite"), color: .clear, size: CGSize(width: 80, height: 80))
         
@@ -42,19 +41,16 @@ class FlowerNode: SKSpriteNode {
         physicsBody?.categoryBitMask = UInt32(4)
         physicsBody?.collisionBitMask = UInt32(0)
         physicsBody?.contactTestBitMask = UInt32(0)
+        setScale(scale)
         
-        let invisibleParent = SKSpriteNode()
-        invisibleParent.position.x = xPosition
-        invisibleParent.position.y = yPosition
+        let invisibleParent = SKSpriteNode(texture: nil, color: .clear, size: CGSize(width: 16, height: 16))
+        invisibleParent.position.x = 0
+        invisibleParent.position.y = 0
         invisibleParent.physicsBody?.affectedByGravity = false
         invisibleParent.addChild(pollenNode)
         invisibleParent.run(SKAction.repeatForever(SKAction.rotate(byAngle: -1, duration: 1)))
         
         addChild(invisibleParent)
-    }
-    
-    func removePollenNode() {
-        self.pollenNode.removeFromParent()
     }
     
     required init?(coder aDecoder: NSCoder) {
