@@ -17,6 +17,7 @@ class SceneManager: ObservableObject {
             }
             if let stage = newStage {
                 currentStage = stage
+                beeScene = currentStage.beeScene
             }
         }
     }

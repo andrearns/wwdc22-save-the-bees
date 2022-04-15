@@ -44,28 +44,28 @@ struct DialogView: View {
                     VStack(alignment: .leading) {
                         Text(dialog.speaker == .queenBee ? "MOMMY - QUEEN BEE" : "YOU - WORKERBEE")
                             .foregroundColor(Color.beeYellow)
-                            .font(.system(size: 24, weight: .bold, design: .rounded))
+                            .font(.system(size: 30, weight: .bold, design: .rounded))
                             .padding(.bottom)
                         
                         Text(dialog.text)
                             .lineLimit(2)
                             .foregroundColor(Color.white)
-                            .font(.system(size: 18, weight: .semibold, design: .rounded))
+                            .font(.system(size: 24, weight: .semibold, design: .rounded))
                             .multilineTextAlignment(.leading)
                             .minimumScaleFactor(0.8)
                         
-                        if dialog.type == .text {
-                            HStack {
-                                Spacer()
-                                HStack {
-                                    Text("NEXT")
-                                    Image(systemName: "chevron.right")
-                                }
-                                .foregroundColor(Color.beeYellow)
-                                .font(.system(size: 18, weight: .bold, design: .rounded))
-                            }
-                            .padding(.top)
-                        }
+//                        if dialog.type == .text {
+//                            HStack {
+//                                Spacer()
+//                                HStack {
+//                                    Text("NEXT")
+//                                    Image(systemName: "chevron.right")
+//                                }
+//                                .foregroundColor(Color.beeYellow)
+//                                .font(.system(size: 18, weight: .bold, design: .rounded))
+//                            }
+//                            .padding(.top)
+//                        }
                     }
                     .padding(.vertical, 32)
                     .padding(.trailing, 32)

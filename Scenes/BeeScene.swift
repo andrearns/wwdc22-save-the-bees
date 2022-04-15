@@ -14,7 +14,7 @@ class BeeScene: SKScene, SKPhysicsContactDelegate {
     private let cam = SKCameraNode()
     private let motionManager = CMMotionManager()
     private var bee: BeeNode?
-    
+   
     override func didMove(to view: SKView) {
         self.physicsBody = SKPhysicsBody(edgeLoopFrom: CGPath(ellipseIn: CGRect(x: -960, y: -960, width: 1920, height: 1920), transform: .none))
         physicsWorld.contactDelegate = self
@@ -22,6 +22,7 @@ class BeeScene: SKScene, SKPhysicsContactDelegate {
         let bee = BeeNode(xPosition: self.frame.midX, yPosition: self.frame.midY)
         self.bee?.pollenNode.position = CGPoint(x: self.frame.midX, y: self.frame.midY)
         self.bee = bee
+        self.bee?.physicsBody?.affectedByGravity = false
         
         addChild(bee)
         

@@ -3,11 +3,11 @@ import SpriteKit
 
 struct GameView: View {
     @StateObject var sceneManager = SceneManager()
-    @State var showHint: Bool = true
     @State var dialogIndex = 0
-    @State var isRadarOn: Bool = true
-    @State var isDialogOn: Bool = false
+    @State var isRadarOn: Bool = false
+    @State var isDialogOn: Bool = true
     @State var isDangerous: Bool = false
+    @State var showNextStage: Bool = false
     
     var spriteView: SpriteView?
     var radarWidth: CGFloat {
@@ -24,8 +24,17 @@ struct GameView: View {
                 DialogView(dialog: sceneManager.currentStage.dialogList[dialogIndex])
                     .opacity(isDialogOn ? 1 : 0)
                     .onTapGesture {
-                        dialogIndex += 1
+                        if dialogIndex < sceneManager.currentStage.dialogList.count - 1 {
+                            dialogIndex += 1
+                        } else {
+                            dialogIndex = 0
+                            sceneManager.currentStageIndex += 1
+                            showNextStage = true
+                        }
                     }
+                NavigationLink("", isActive: $showNextStage) {
+                    StageIntroView(title: "Stage 2", description: "Entering the danger zone")
+                }
             }
             VStack {
                 HStack {

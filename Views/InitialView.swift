@@ -89,7 +89,7 @@ struct InitialView: View {
                         .foregroundColor(Color.beeBrown)
                 }
                 NavigationLink("", isActive: $startGame, destination: {
-                    StageIntroView(title: "Stage 1", description: "First day at work")
+                    GameIntroView()
                 })
             }
             .edgesIgnoringSafeArea(.all)
