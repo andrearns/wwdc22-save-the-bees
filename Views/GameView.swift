@@ -7,7 +7,7 @@ struct GameView: View {
     @State var dialogIndex = 0
     @State var isRadarOn: Bool = true
     @State var isDialogOn: Bool = false
-    @State var isDangerous: Bool = true
+    @State var isDangerous: Bool = false
     
     var spriteView: SpriteView?
     var radarWidth: CGFloat {
