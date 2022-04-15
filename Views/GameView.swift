@@ -11,7 +11,7 @@ struct GameView: View {
     
     var spriteView: SpriteView?
     var radarWidth: CGFloat {
-        return UIScreen.main.bounds.width / 3
+        return UIScreen.main.bounds.width / 4
     }
     
     var body: some View {
@@ -35,7 +35,6 @@ struct GameView: View {
                         .aspectRatio(contentMode: .fit)
                         .frame(width: radarWidth, height: radarWidth)
                         .padding()
-                        .padding(.top)
                 }
                 Spacer()
             }
@@ -43,5 +42,6 @@ struct GameView: View {
         }
         .ignoresSafeArea()
         .statusBar(hidden: true)
+        .navigationBarBackButtonHidden(true)
     }
 }

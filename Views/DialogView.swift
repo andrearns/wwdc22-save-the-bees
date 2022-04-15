@@ -42,7 +42,7 @@ struct DialogView: View {
                     }
                     
                     VStack(alignment: .leading) {
-                        Text(dialog.speaker == .queenBee ? "QUEEN BEE" : "YOU")
+                        Text(dialog.speaker == .queenBee ? "MOMMY - QUEEN BEE" : "YOU - WORKERBEE")
                             .foregroundColor(Color.beeYellow)
                             .font(.system(size: 24, weight: .bold, design: .rounded))
                             .padding(.bottom)
