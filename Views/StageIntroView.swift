@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct StageIntroView: View {
+    @ObservedObject var gameViewModel: GameViewModel
     var title: String
     var description: String
     @State var showGameView: Bool = false
@@ -24,7 +25,7 @@ struct StageIntroView: View {
                 .foregroundColor(Color.white)
                 .multilineTextAlignment(.center)
             NavigationLink("", isActive: $showGameView, destination: {
-                GameView()
+                GameView(currentStage: gameViewModel.currentStage, beeScene: gameViewModel.currentStage.beeScene)
             })
         }
         .frame(maxWidth: .infinity)
@@ -40,8 +41,8 @@ struct StageIntroView: View {
     }
 }
 
-struct StageIntroView_Previews: PreviewProvider {
-    static var previews: some View {
-        StageIntroView(title: "Stage 1", description: "First day at work")
-    }
-}
+//struct StageIntroView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        StageIntroView(title: "Stage 1", description: "First day at work")
+//    }
+//}

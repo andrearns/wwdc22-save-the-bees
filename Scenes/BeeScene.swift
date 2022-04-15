@@ -32,6 +32,7 @@ class BeeScene: SKScene, SKPhysicsContactDelegate {
         
         self.bee!.position = CGPoint(x: frame.midX, y: frame.midY)
         
+        // Review -> This depends of the current stage
         for _ in 0...2 {
             spawnNewFlower(xPosition: getRandomXPosition(minimumXPosition: -600, maximumXPosition: 600), yPosition: getRandomYPosition(minimumYPosition: -600, maximumYPosition: 600), hasPollen: true, categoryBitMask: UInt32(4))
             spawnNewClosedFlower(xPosition: getRandomXPosition(minimumXPosition: -600, maximumXPosition: 600), yPosition: getRandomYPosition(minimumYPosition: -600, maximumYPosition: 600))

@@ -13,6 +13,7 @@ struct InitialView: View {
     @State var secondCloudXPosition: CGFloat = 300
     @State var thirdCloudXPosition: CGFloat = -500
     @State var startGame: Bool = false
+    @ObservedObject var gameViewModel: GameViewModel
     
     var body: some View {
         NavigationView {
@@ -89,7 +90,7 @@ struct InitialView: View {
                         .foregroundColor(Color.beeBrown)
                 }
                 NavigationLink("", isActive: $startGame, destination: {
-                    GameIntroView()
+                    GameIntroView(gameViewModel: gameViewModel)
                 })
             }
             .edgesIgnoringSafeArea(.all)
@@ -107,8 +108,8 @@ struct InitialView: View {
     }
 }
 
-struct InitialView_Previews: PreviewProvider {
-    static var previews: some View {
-        InitialView()
-    }
-}
+//struct InitialView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        InitialView()
+//    }
+//}

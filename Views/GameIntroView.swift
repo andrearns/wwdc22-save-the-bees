@@ -9,6 +9,7 @@ import SwiftUI
 
 struct GameIntroView: View {
     @State var goNext: Bool = false
+    @ObservedObject var gameViewModel: GameViewModel
     
     var body: some View {
         ZStack {
@@ -17,7 +18,7 @@ struct GameIntroView: View {
                 .aspectRatio(contentMode: .fit)
                 .frame(maxWidth: UIScreen.main.bounds.width + 40)
             NavigationLink("", isActive: $goNext, destination: {
-                StageIntroView(title: "Stage 1", description: "First day at work")
+                StageIntroView(gameViewModel: gameViewModel, title: "Stage 1", description: "First day at work")
             })
         }
         .navigationBarBackButtonHidden(true)
@@ -29,8 +30,8 @@ struct GameIntroView: View {
     }
 }
 
-struct GameIntroView_Previews: PreviewProvider {
-    static var previews: some View {
-        GameIntroView()
-    }
-}
+//struct GameIntroView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        GameIntroView()
+//    }
+//}

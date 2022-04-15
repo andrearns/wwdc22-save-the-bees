@@ -35,7 +35,8 @@ final class DialogBank {
         ]
         
         self.thirdStageDialogList = [
-        
+            Dialog(type: .text, speaker: .queenBee, text: "Now you graduated. Congratulations, my darling!"),
+            Dialog(type: .task, speaker: .queenBee, text: "Now pollinate the world!"),
         ]
     }
 }

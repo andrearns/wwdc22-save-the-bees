@@ -9,7 +9,7 @@ import SwiftUI
 
 struct DialogView: View {
     
-    var dialog: Dialog
+    @Binding var dialog: Dialog
     
     var hexagonWidth: CGFloat {
         (UIImage(named: "brownHexagonSprite")?.size.width)!
@@ -78,18 +78,5 @@ struct DialogView: View {
         .frame(maxWidth: .infinity)
         .frame(height: 220)
         .padding()
-    }
-}
-
-struct DialogView_Previews: PreviewProvider {
-    static var previews: some View {
-        DialogView(
-            dialog:
-                Dialog(
-                    type: .text,
-                    speaker: .workerBee,
-                    text: "Your hour has come, you must work for me. You must collect the nectar from the flowers to feed me."
-                )
-        )
     }
 }

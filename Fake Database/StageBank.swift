@@ -15,9 +15,9 @@ class StageBank {
     
     private init() {
         self.stageList = [
-            Stage(index: 0, beeScene: SKScene(fileNamed: "Scene1") as! BeeScene, dialogList: DialogBank.shared.firstStageDialogList, flowerCount: 2),
-            Stage(index: 1, beeScene: SKScene(fileNamed: "Scene1") as! BeeScene, dialogList: DialogBank.shared.secondStageDialogList, flowerCount: 5),
-            Stage(index: 2, beeScene: SKScene(fileNamed: "Scene1") as! BeeScene, dialogList: DialogBank.shared.thirdStageDialogList, flowerCount: 8)
+            Stage(title: "Stage 1", subtitle: "First day at work",index: 0, beeScene: SKScene(fileNamed: "Scene1") as! BeeScene, dialogList: DialogBank.shared.firstStageDialogList, flowerCount: 2),
+            Stage(title: "Stage 2", subtitle: "Entering the danger zone", index: 1, beeScene: SKScene(fileNamed: "Scene2") as! BeeScene, dialogList: DialogBank.shared.secondStageDialogList, flowerCount: 5),
+            Stage(title: "Stage 3", subtitle: "Colorful world", index: 2, beeScene: SKScene(fileNamed: "Scene1") as! BeeScene, dialogList: DialogBank.shared.thirdStageDialogList, flowerCount: 8)
         ]
     }
 }

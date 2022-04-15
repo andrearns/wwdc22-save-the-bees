@@ -2,39 +2,49 @@ import SwiftUI
 import SpriteKit
 
 struct GameView: View {
-    @StateObject var sceneManager = SceneManager()
-    @State var dialogIndex = 0
+    @ObservedObject var gameViewModel: GameViewModel
     @State var isRadarOn: Bool = false
     @State var isDialogOn: Bool = true
     @State var isDangerous: Bool = false
     @State var showNextStage: Bool = false
+    @State var showFinalScreen: Bool = false
     
     var spriteView: SpriteView?
     var radarWidth: CGFloat {
         return UIScreen.main.bounds.width / 4
     }
     
+    init(currentStage: Stage, beeScene: BeeScene) {
+        self.gameViewModel = GameViewModel(currentStage: currentStage, beeScene: beeScene)
+    }
+    
     var body: some View {
         ZStack {
             VStack {
-                SpriteView(scene: sceneManager.beeScene)
+                SpriteView(scene: gameViewModel.currentStage.beeScene)
             }
             VStack {
                 Spacer()
-                DialogView(dialog: sceneManager.currentStage.dialogList[dialogIndex])
+                DialogView(dialog: $gameViewModel.currentStage.dialogList[gameViewModel.dialogIndex])
                     .opacity(isDialogOn ? 1 : 0)
                     .onTapGesture {
-                        if dialogIndex < sceneManager.currentStage.dialogList.count - 1 {
-                            dialogIndex += 1
-                        } else {
-                            dialogIndex = 0
-                            sceneManager.currentStageIndex += 1
-                            showNextStage = true
+                        gameViewModel.dialogTapHandle {
+                            if gameViewModel.currentStageIndex < 2 {
+                                showNextStage = true
+                            } else {
+                                showFinalScreen = true
+                            }
+                            
+                            gameViewModel.currentStageIndex += 1
                         }
                     }
                 NavigationLink("", isActive: $showNextStage) {
-                    StageIntroView(title: "Stage 2", description: "Entering the danger zone")
+                    StageIntroView(gameViewModel: gameViewModel, title: gameViewModel.currentStage.title, description: gameViewModel.currentStage.subtitle)
                 }
+                
+                NavigationLink("", isActive: $showFinalScreen, destination: {
+                    FinalView()
+                })
             }
             VStack {
                 HStack {
