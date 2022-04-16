@@ -14,8 +14,10 @@ class BeeScene: SKScene, SKPhysicsContactDelegate {
     private let cam = SKCameraNode()
     private let motionManager = CMMotionManager()
     private var bee: BeeNode?
+    private var flyingAnimation: SKAction!
    
     override func didMove(to view: SKView) {
+        
         self.physicsBody = SKPhysicsBody(edgeLoopFrom: CGPath(ellipseIn: CGRect(x: -960, y: -960, width: 1920, height: 1920), transform: .none))
         physicsWorld.contactDelegate = self
         
@@ -25,6 +27,9 @@ class BeeScene: SKScene, SKPhysicsContactDelegate {
         self.bee?.physicsBody?.affectedByGravity = false
         
         addChild(bee)
+        
+        setupFlyingAnimation()
+        self.bee?.run(flyingAnimation)
         
         self.camera = cam
         
@@ -52,6 +57,17 @@ class BeeScene: SKScene, SKPhysicsContactDelegate {
         
         let position = bee!.position
         cam.position = position
+    }
+    
+    // MARK: - Bee animation
+    func setupFlyingAnimation() {
+        var flyingTextureList: [SKTexture] = []
+        
+        for i in 1...6 {
+            flyingTextureList.append(SKTexture(imageNamed: "beeAnimation\(i)"))
+        }
+        
+        flyingAnimation = SKAction.repeatForever(SKAction.animate(with: flyingTextureList, timePerFrame: 0.03))
     }
     
     // MARK: - Accelerometer
