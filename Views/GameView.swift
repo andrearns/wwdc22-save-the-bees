@@ -28,15 +28,24 @@ struct GameView: View {
                 DialogView(dialog: $gameViewModel.currentStage.dialogList[gameViewModel.dialogIndex])
                     .opacity(isDialogOn ? 1 : 0)
                     .onTapGesture {
-                        gameViewModel.dialogTapHandle {
-                            if gameViewModel.currentStageIndex < 2 {
-                                showNextStage = true
-                            } else {
-                                showFinalScreen = true
+                        gameViewModel.dialogTapHandle(
+                            normalDialogCompletion: {
+                                if gameViewModel.currentStageIndex == 1 {
+                                    if gameViewModel.dialogIndex == 1 {
+                                        isRadarOn = true
+                                    }
+                                }
+                            },
+                            finalDialogCompletion: {
+                                if gameViewModel.currentStageIndex < StageBank.shared.stageList.count {
+                                    showNextStage = true
+                                } else {
+                                    showFinalScreen = true
+                                }
+                                
+                                gameViewModel.currentStageIndex += 1
                             }
-                            
-                            gameViewModel.currentStageIndex += 1
-                        }
+                        )
                     }
                 NavigationLink("", isActive: $showNextStage) {
                     StageIntroView(gameViewModel: gameViewModel, title: gameViewModel.currentStage.title, description: gameViewModel.currentStage.subtitle)

@@ -15,7 +15,7 @@ class BeeScene: SKScene, SKPhysicsContactDelegate {
     private let motionManager = CMMotionManager()
     private var bee: BeeNode?
     private var flyingAnimation: SKAction!
-   
+    
     override func didMove(to view: SKView) {
         
         self.physicsBody = SKPhysicsBody(edgeLoopFrom: CGPath(ellipseIn: CGRect(x: -960, y: -960, width: 1920, height: 1920), transform: .none))

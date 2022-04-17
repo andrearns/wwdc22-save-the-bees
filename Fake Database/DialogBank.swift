@@ -10,14 +10,18 @@ import Foundation
 final class DialogBank {
     static var shared = DialogBank()
     
+    var gameIntroDialogList: [Dialog] = []
     var firstStageDialogList: [Dialog] = []
     var secondStageDialogList: [Dialog] = []
     var thirdStageDialogList: [Dialog] = []
     
     private init() {
-        self.firstStageDialogList = [
+        self.gameIntroDialogList = [
             Dialog(type: .text, speaker: .queenBee, text: "Your hour has come, you must work for me, my daughter. You must collect the nectar from the flowers to feed me."),
             Dialog(type: .text, speaker: .queenBee, text: "But first I need to teach you the basics, to save you from a tragic death."),
+        ]
+        
+        self.firstStageDialogList = [
             Dialog(type: .task, speaker: .queenBee, text: "Ok, let's start!. In order to fly, lean the device to the desired direction using the accelerometer."),
             Dialog(type: .text, speaker: .queenBee, text: "Okay okay! Great job little bee, you learn fast."),
             Dialog(type: .text, speaker: .queenBee, text: "I'm also giving you this radar, which will show where are the flowers full of pollen. Your other sisters are always updating it."),

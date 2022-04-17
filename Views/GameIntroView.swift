@@ -8,8 +8,9 @@
 import SwiftUI
 
 struct GameIntroView: View {
-    @State var goNext: Bool = false
+    @State var showFirstStage: Bool = false
     @ObservedObject var gameViewModel: GameViewModel
+    @ObservedObject var gameIntroViewModel = GameIntroViewModel()
     
     var body: some View {
         ZStack {
@@ -17,16 +18,23 @@ struct GameIntroView: View {
                 .resizable()
                 .aspectRatio(contentMode: .fit)
                 .frame(maxWidth: UIScreen.main.bounds.width + 40)
-            NavigationLink("", isActive: $goNext, destination: {
-                StageIntroView(gameViewModel: gameViewModel, title: "Stage 1", description: "First day at work")
-            })
+            
+            VStack {
+                Spacer()
+                DialogView(dialog: $gameIntroViewModel.dialogList[gameIntroViewModel.dialogIndex])
+                    .onTapGesture {
+                        gameIntroViewModel.dialogTapHandle {
+                            showFirstStage = true
+                        }
+                    }
+                NavigationLink("", isActive: $showFirstStage) {
+                    StageIntroView(gameViewModel: gameViewModel, title: gameViewModel.currentStage.title, description: gameViewModel.currentStage.subtitle)
+                }
+            }
         }
         .navigationBarBackButtonHidden(true)
         .statusBar(hidden: true)
         .edgesIgnoringSafeArea(.all)
-        .onTapGesture {
-            goNext = true
-        }
     }
 }
 

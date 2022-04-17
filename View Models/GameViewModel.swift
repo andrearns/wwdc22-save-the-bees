@@ -10,7 +10,6 @@ import SwiftUI
 import SpriteKit
 
 class GameViewModel: ObservableObject {
-    
     var beeScene: BeeScene
     var currentStage: Stage
     @Published var dialogIndex = 0
@@ -37,12 +36,13 @@ class GameViewModel: ObservableObject {
         beeScene.scaleMode = .aspectFit
     }
     
-    func dialogTapHandle(finalDialogCompletion: () -> ()) {
+    func dialogTapHandle(normalDialogCompletion: () -> (), finalDialogCompletion: () -> ()) {
         if dialogIndex < currentStage.dialogList.count - 1 {
+            normalDialogCompletion()
             dialogIndex += 1
         } else {
-            dialogIndex = 0
             finalDialogCompletion()
+            dialogIndex = 0
         }
     }
 }
