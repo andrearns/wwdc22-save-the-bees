@@ -18,9 +18,12 @@ class BeeScene: SKScene, SKPhysicsContactDelegate {
     private var bee: BeeNode?
     private var flyingAnimation: SKAction!
     private var darkOverlayNode: SKSpriteNode!
+    var minimumXPosition: CGFloat?
+    var maximumXPosition: CGFloat?
+    var minimumYPosition: CGFloat?
+    var maximumYPosition: CGFloat?
     
     override func didMove(to view: SKView) {
-        self.physicsBody = SKPhysicsBody(edgeLoopFrom: CGPath(ellipseIn: CGRect(x: -960, y: -960, width: 1920, height: 1920), transform: .none))
         physicsWorld.contactDelegate = self
         
         let bee = BeeNode(xPosition: self.frame.midX, yPosition: self.frame.midY)
@@ -65,10 +68,12 @@ class BeeScene: SKScene, SKPhysicsContactDelegate {
     // MARK: - Tasks
     func foundPollenForTheFirstTime() {
         print("Found pollen for the first time")
+        // TO DO
     }
     
     func growFlowersForTheFirstTime() {
         print("Grow flowers for the first time")
+        // TO DO
     }
     
     // MARK: - Overlay
@@ -144,8 +149,8 @@ class BeeScene: SKScene, SKPhysicsContactDelegate {
     // MARK: - Flowers
     func spawnFirstFlowers(_ numberOfFlowers: Int) {
         for _ in 0...(numberOfFlowers - 1) {
-            spawnNewFlower(xPosition: getRandomXPosition(minimumXPosition: -600, maximumXPosition: 600), yPosition: getRandomYPosition(minimumYPosition: -600, maximumYPosition: 600), hasPollen: true, categoryBitMask: UInt32(4))
-            spawnNewClosedFlower(xPosition: getRandomXPosition(minimumXPosition: -600, maximumXPosition: 600), yPosition: getRandomYPosition(minimumYPosition: -600, maximumYPosition: 600))
+            spawnNewFlower(xPosition: getRandomXPosition(minimumXPosition: minimumXPosition!, maximumXPosition: maximumXPosition!), yPosition: getRandomYPosition(minimumYPosition: minimumYPosition!, maximumYPosition: maximumYPosition!), hasPollen: true, categoryBitMask: UInt32(4))
+            spawnNewClosedFlower(xPosition: getRandomXPosition(minimumXPosition: minimumXPosition!, maximumXPosition: maximumXPosition!), yPosition: getRandomYPosition(minimumYPosition: minimumYPosition!, maximumYPosition: maximumYPosition!))
         }
     }
     
