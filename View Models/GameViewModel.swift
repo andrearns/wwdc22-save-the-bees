@@ -40,6 +40,7 @@ class GameViewModel: ObservableObject {
         self.currentStageIndex = currentStage.index
         self.currentStage = currentStage
         self.beeScene = beeScene
+        self.beeScene.gameViewModel = self
         beeScene.size = CGSize(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)
         beeScene.anchorPoint = CGPoint(x: 0.5, y: 0.5)
         beeScene.scaleMode = .aspectFit
@@ -55,12 +56,12 @@ class GameViewModel: ObservableObject {
                 case 1:
                     withAnimation {
                         isRadarOn = true
-                        self.beeScene.showOverlay()
+                        self.beeScene.showDarkOverlay()
                     }
                 case 2:
                     withAnimation {
                         self.beeScene.spawnFirstFlowers(currentStage.flowerCount)
-                        self.beeScene.hideOverlay()
+                        self.beeScene.hideDarkOverlay()
                     }
                 case 3:
                     print("Dialog 3")

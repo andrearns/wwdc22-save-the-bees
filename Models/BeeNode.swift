@@ -7,6 +7,7 @@
 
 import Foundation
 import SpriteKit
+import SwiftUI
 
 class BeeNode: SKSpriteNode {
     var pollenNode: SKShapeNode
@@ -32,8 +33,8 @@ class BeeNode: SKSpriteNode {
     init(xPosition: CGFloat, yPosition: CGFloat) {
         
         pollenNode = SKShapeNode(rect: CGRect(x: 0, y: 0, width: 16, height: 16), cornerRadius: 8)
-        pollenNode.fillColor = UIColor.red
-        pollenNode.strokeColor = UIColor.red
+        pollenNode.fillColor = UIColor(Color.beeRed)
+        pollenNode.strokeColor = UIColor(Color.beeRed)
         pollenNode.alpha = 0
         pollenNode.position.x = xPosition
         pollenNode.position.y = yPosition
@@ -45,7 +46,7 @@ class BeeNode: SKSpriteNode {
         physicsBody?.allowsRotation = true
         physicsBody?.restitution = 0.5
         zPosition = 1000
-        physicsBody?.categoryBitMask = UInt32(2)
+        physicsBody?.categoryBitMask = CategoryBitMask.beeCategory
         physicsBody?.collisionBitMask = UInt32(1)
         physicsBody?.contactTestBitMask = UInt32(15)
         

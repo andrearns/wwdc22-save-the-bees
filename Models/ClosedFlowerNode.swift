@@ -18,7 +18,7 @@ class ClosedFlowerNode: SKSpriteNode {
         position.x = xPosition
         position.y = yPosition
         physicsBody?.isDynamic = true
-        physicsBody?.categoryBitMask = UInt32(8)
+        physicsBody?.categoryBitMask = CategoryBitMask.closedFlowerCategory
         physicsBody?.collisionBitMask = UInt32(0)
         physicsBody?.contactTestBitMask = UInt32(0)
     }

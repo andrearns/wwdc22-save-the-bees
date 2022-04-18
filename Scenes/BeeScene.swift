@@ -8,11 +8,12 @@
 import Foundation
 import SpriteKit
 import CoreMotion
+import SwiftUI
 
 class BeeScene: SKScene, SKPhysicsContactDelegate {
     
     // How can I do this?
-//    var gameViewModel: GameViewModel
+    var gameViewModel: GameViewModel?
     private let cam = SKCameraNode()
     private let motionManager = CMMotionManager()
     private var bee: BeeNode?
@@ -39,10 +40,10 @@ class BeeScene: SKScene, SKPhysicsContactDelegate {
         
         self.camera = cam
         
-        self.darkOverlayNode = SKSpriteNode(texture: nil, color: UIColor.black, size: CGSize(width: 4000, height: 4000))
+        self.darkOverlayNode = SKSpriteNode(texture: nil, color: UIColor.black, size: frame.size)
         self.darkOverlayNode.position = CGPoint(x: self.frame.midX, y: self.frame.midY)
         self.darkOverlayNode.zPosition = 999
-        self.hideOverlay()
+        self.hideDarkOverlay()
         self.addChild(darkOverlayNode)
         
         self.setupAccelerometer()
@@ -53,7 +54,11 @@ class BeeScene: SKScene, SKPhysicsContactDelegate {
     override func update(_ currentTime: TimeInterval) {
         if let accelerometerData = motionManager.accelerometerData {
             if let currentVelocity = bee!.physicsBody?.velocity {
-                physicsWorld.gravity = CGVector(dx: accelerometerData.acceleration.x * 2, dy: accelerometerData.acceleration.y * 2)
+                if self.gameViewModel!.isDangerous {
+                    physicsWorld.gravity = CGVector(dx: -accelerometerData.acceleration.x * 2, dy: -accelerometerData.acceleration.y * 2)
+                } else {
+                    physicsWorld.gravity = CGVector(dx: accelerometerData.acceleration.x * 2, dy: accelerometerData.acceleration.y * 2)
+                }
                 
                 self.bee!.zRotation = currentVelocity.angleRadians() - CGFloat.pi/2
                 self.bee!.lastFacingDirection = currentVelocity
@@ -63,25 +68,15 @@ class BeeScene: SKScene, SKPhysicsContactDelegate {
         
         let position = bee!.position
         cam.position = position
+        self.darkOverlayNode.position = self.cam.position
     }
     
-    // MARK: - Tasks
-    func foundPollenForTheFirstTime() {
-        print("Found pollen for the first time")
-        // TO DO
-    }
-    
-    func growFlowersForTheFirstTime() {
-        print("Grow flowers for the first time")
-        // TO DO
-    }
-    
-    // MARK: - Overlay
-    func showOverlay() {
+    // MARK: - Overlays
+    func showDarkOverlay() {
         self.darkOverlayNode.alpha = 0.5
     }
     
-    func hideOverlay() {
+    func hideDarkOverlay() {
         self.darkOverlayNode.alpha = 0
     }
     
@@ -116,7 +111,7 @@ class BeeScene: SKScene, SKPhysicsContactDelegate {
         }
         
         // Collect pollen
-        if firstBody.categoryBitMask == UInt32(2) && secondBody.categoryBitMask == UInt32(4) {
+        if firstBody.categoryBitMask == CategoryBitMask.beeCategory && secondBody.categoryBitMask == CategoryBitMask.pollenCategory {
             if bee!.hasPollen == false {
                 print("Collect pollen")
                 // Remove pollen node from contacted flower
@@ -129,7 +124,7 @@ class BeeScene: SKScene, SKPhysicsContactDelegate {
             }
         }
         // Collision with closed flower
-        else if firstBody.categoryBitMask == UInt32(2) && secondBody.categoryBitMask == UInt32(8) {
+        else if firstBody.categoryBitMask == CategoryBitMask.beeCategory && secondBody.categoryBitMask == CategoryBitMask.closedFlowerCategory {
             print("Collision with closed flower")
             
             if bee!.hasPollen {
@@ -144,13 +139,47 @@ class BeeScene: SKScene, SKPhysicsContactDelegate {
                 growFlowersAfterPollination(xPosition: secondBody.node!.position.x, yPosition: secondBody.node!.position.y)
             }
         }
+        // Collision with pesticide
+        else if firstBody.categoryBitMask == CategoryBitMask.beeCategory && secondBody.categoryBitMask == CategoryBitMask.pesticideCategory {
+            print("Collision with pesticide")
+            withAnimation {
+                gameViewModel?.isDangerous = true
+                bee?.color = .black
+                bee?.colorBlendFactor = 0.6
+            }
+        }
+    }
+    
+    func didEnd(_ contact: SKPhysicsContact) {
+        var firstBody: SKPhysicsBody
+        var secondBody: SKPhysicsBody
+        
+        if contact.bodyA.categoryBitMask < contact.bodyB.categoryBitMask {
+            firstBody = contact.bodyA
+            secondBody = contact.bodyB
+        } else {
+            firstBody = contact.bodyB
+            secondBody = contact.bodyA
+        }
+        
+        if firstBody.categoryBitMask == CategoryBitMask.beeCategory && secondBody.categoryBitMask == CategoryBitMask.pesticideCategory {
+            print("Collision with pesticide ended")
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                withAnimation {
+                    self.gameViewModel?.isDangerous = false
+                    self.bee?.colorBlendFactor = 0
+                }
+            }
+        }
     }
     
     // MARK: - Flowers
     func spawnFirstFlowers(_ numberOfFlowers: Int) {
         for _ in 0...(numberOfFlowers - 1) {
-            spawnNewFlower(xPosition: getRandomXPosition(minimumXPosition: minimumXPosition!, maximumXPosition: maximumXPosition!), yPosition: getRandomYPosition(minimumYPosition: minimumYPosition!, maximumYPosition: maximumYPosition!), hasPollen: true, categoryBitMask: UInt32(4))
-            spawnNewClosedFlower(xPosition: getRandomXPosition(minimumXPosition: minimumXPosition!, maximumXPosition: maximumXPosition!), yPosition: getRandomYPosition(minimumYPosition: minimumYPosition!, maximumYPosition: maximumYPosition!))
+//            spawnNewFlower(xPosition: getRandomXPosition(minimumXPosition: minimumXPosition!, maximumXPosition: maximumXPosition!), yPosition: getRandomYPosition(minimumYPosition: minimumYPosition!, maximumYPosition: maximumYPosition!), hasPollen: true, categoryBitMask: UInt32(4))
+//            spawnNewClosedFlower(xPosition: getRandomXPosition(minimumXPosition: minimumXPosition!, maximumXPosition: maximumXPosition!), yPosition: getRandomYPosition(minimumYPosition: minimumYPosition!, maximumYPosition: maximumYPosition!))
+            spawnNewFlower(xPosition: getRandomXPosition(minimumXPosition: -600, maximumXPosition: 600), yPosition: getRandomYPosition(minimumYPosition: -600, maximumYPosition: 600), hasPollen: true, categoryBitMask: CategoryBitMask.pollenCategory)
+            spawnNewClosedFlower(xPosition: getRandomXPosition(minimumXPosition: -600, maximumXPosition: 600), yPosition: getRandomYPosition(minimumYPosition: -600, maximumYPosition: 600))
         }
     }
     
@@ -158,7 +187,7 @@ class BeeScene: SKScene, SKPhysicsContactDelegate {
         for _ in 0...6 {
             let randomCloseXPosition = getRandomXPosition(minimumXPosition: xPosition - 100, maximumXPosition: xPosition + 100)
             let randomCloseYPosition = getRandomYPosition(minimumYPosition: yPosition - 100, maximumYPosition: yPosition + 100)
-            spawnNewFlower(xPosition: randomCloseXPosition, yPosition: randomCloseYPosition, hasPollen: false, categoryBitMask: UInt32(16))
+            spawnNewFlower(xPosition: randomCloseXPosition, yPosition: randomCloseYPosition, hasPollen: false, categoryBitMask: CategoryBitMask.none)
         }
     }
     
