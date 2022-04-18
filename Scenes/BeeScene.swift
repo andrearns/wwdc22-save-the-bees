@@ -11,20 +11,23 @@ import CoreMotion
 
 class BeeScene: SKScene, SKPhysicsContactDelegate {
     
+    // How can I do this?
+//    var gameViewModel: GameViewModel
     private let cam = SKCameraNode()
     private let motionManager = CMMotionManager()
     private var bee: BeeNode?
     private var flyingAnimation: SKAction!
+    private var darkOverlayNode: SKSpriteNode!
     
     override func didMove(to view: SKView) {
-        
         self.physicsBody = SKPhysicsBody(edgeLoopFrom: CGPath(ellipseIn: CGRect(x: -960, y: -960, width: 1920, height: 1920), transform: .none))
         physicsWorld.contactDelegate = self
         
         let bee = BeeNode(xPosition: self.frame.midX, yPosition: self.frame.midY)
         self.bee?.pollenNode.position = CGPoint(x: self.frame.midX, y: self.frame.midY)
         self.bee = bee
-        self.bee?.physicsBody?.affectedByGravity = false
+        // Change this
+        self.bee?.physicsBody?.affectedByGravity = true
         
         addChild(bee)
         
@@ -33,15 +36,15 @@ class BeeScene: SKScene, SKPhysicsContactDelegate {
         
         self.camera = cam
         
+        self.darkOverlayNode = SKSpriteNode(texture: nil, color: UIColor.black, size: CGSize(width: 4000, height: 4000))
+        self.darkOverlayNode.position = CGPoint(x: self.frame.midX, y: self.frame.midY)
+        self.darkOverlayNode.zPosition = 999
+        self.hideOverlay()
+        self.addChild(darkOverlayNode)
+        
         self.setupAccelerometer()
         
         self.bee!.position = CGPoint(x: frame.midX, y: frame.midY)
-        
-        // Review -> This depends of the current stage
-        for _ in 0...2 {
-            spawnNewFlower(xPosition: getRandomXPosition(minimumXPosition: -600, maximumXPosition: 600), yPosition: getRandomYPosition(minimumYPosition: -600, maximumYPosition: 600), hasPollen: true, categoryBitMask: UInt32(4))
-            spawnNewClosedFlower(xPosition: getRandomXPosition(minimumXPosition: -600, maximumXPosition: 600), yPosition: getRandomYPosition(minimumYPosition: -600, maximumYPosition: 600))
-        }
     }
     
     override func update(_ currentTime: TimeInterval) {
@@ -57,6 +60,24 @@ class BeeScene: SKScene, SKPhysicsContactDelegate {
         
         let position = bee!.position
         cam.position = position
+    }
+    
+    // MARK: - Tasks
+    func foundPollenForTheFirstTime() {
+        print("Found pollen for the first time")
+    }
+    
+    func growFlowersForTheFirstTime() {
+        print("Grow flowers for the first time")
+    }
+    
+    // MARK: - Overlay
+    func showOverlay() {
+        self.darkOverlayNode.alpha = 0.5
+    }
+    
+    func hideOverlay() {
+        self.darkOverlayNode.alpha = 0
     }
     
     // MARK: - Bee animation
@@ -121,6 +142,13 @@ class BeeScene: SKScene, SKPhysicsContactDelegate {
     }
     
     // MARK: - Flowers
+    func spawnFirstFlowers(_ numberOfFlowers: Int) {
+        for _ in 0...(numberOfFlowers - 1) {
+            spawnNewFlower(xPosition: getRandomXPosition(minimumXPosition: -600, maximumXPosition: 600), yPosition: getRandomYPosition(minimumYPosition: -600, maximumYPosition: 600), hasPollen: true, categoryBitMask: UInt32(4))
+            spawnNewClosedFlower(xPosition: getRandomXPosition(minimumXPosition: -600, maximumXPosition: 600), yPosition: getRandomYPosition(minimumYPosition: -600, maximumYPosition: 600))
+        }
+    }
+    
     func growFlowersAfterPollination(xPosition: CGFloat, yPosition: CGFloat) {
         for _ in 0...6 {
             let randomCloseXPosition = getRandomXPosition(minimumXPosition: xPosition - 100, maximumXPosition: xPosition + 100)

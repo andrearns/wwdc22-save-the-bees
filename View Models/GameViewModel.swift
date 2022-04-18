@@ -12,6 +12,12 @@ import SpriteKit
 class GameViewModel: ObservableObject {
     var beeScene: BeeScene
     var currentStage: Stage
+    
+    @Published var isRadarOn: Bool = false
+    @Published var showNextStage: Bool = false
+    @Published var showFinalScreen: Bool = false
+    @Published var isDialogOn: Bool = true
+    @Published var isDangerous: Bool = false
     @Published var dialogIndex = 0
 
     var currentStageIndex: Int {
@@ -21,8 +27,11 @@ class GameViewModel: ObservableObject {
             }
             if let stage = newStage {
                 self.currentStage = stage
-                self.beeScene.removeAllChildren()
-                self.beeScene = stage.beeScene
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                    self.beeScene.removeAllChildren()
+                    self.beeScene = stage.beeScene
+                    self.beeScene.spawnFirstFlowers(stage.flowerCount)
+                }
             }
         }
     }
@@ -36,12 +45,53 @@ class GameViewModel: ObservableObject {
         beeScene.scaleMode = .aspectFit
     }
     
-    func dialogTapHandle(normalDialogCompletion: () -> (), finalDialogCompletion: () -> ()) {
+    func dialogTapHandle() {
         if dialogIndex < currentStage.dialogList.count - 1 {
-            normalDialogCompletion()
-            dialogIndex += 1
+            // STAGE 1
+            if currentStageIndex == 1 {
+                switch dialogIndex {
+                case 0:
+                    print("Dialog 0")
+                case 1:
+                    withAnimation {
+                        isRadarOn = true
+                        self.beeScene.showOverlay()
+                    }
+                case 2:
+                    withAnimation {
+                        self.beeScene.spawnFirstFlowers(currentStage.flowerCount)
+                        self.beeScene.hideOverlay()
+                    }
+                case 3:
+                    print("Dialog 3")
+                case 5:
+                    print("Dialog 5")
+                default:
+                    print("Dialog x")
+                }
+            }
+            // STAGE 2
+            else if currentStageIndex == 2 {
+                
+            }
+            // STAGE 3
+            else if currentStageIndex == 3 {
+                
+            }
+            
+//            if currentStage.dialogList[dialogIndex].type == .text {
+                dialogIndex += 1
+//            }
         } else {
-            finalDialogCompletion()
+            if currentStageIndex < StageBank.shared.stageList.count {
+                showNextStage = true
+            } else {
+                isDialogOn = false
+                showFinalScreen = true
+            }
+            
+            currentStageIndex += 1
+            
             dialogIndex = 0
         }
     }

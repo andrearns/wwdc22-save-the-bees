@@ -22,7 +22,7 @@ final class DialogBank {
         ]
         
         self.firstStageDialogList = [
-            Dialog(type: .task, speaker: .queenBee, text: "Ok, let's start!. In order to fly, lean the device to the desired direction using the accelerometer."),
+            Dialog(type: .task, speaker: .queenBee, text: "Ok, let's start! In order to fly, lean the device to the desired direction using the accelerometer."),
             Dialog(type: .text, speaker: .queenBee, text: "Okay okay! Great job little bee, you learn fast."),
             Dialog(type: .text, speaker: .queenBee, text: "I'm also giving you this radar, which will show where are the flowers full of pollen. Your other sisters are always updating it."),
             Dialog(type: .task, speaker: .queenBee, text: "Find a tasty flower using the radar and collect the pollen."),
@@ -34,7 +34,7 @@ final class DialogBank {
         self.secondStageDialogList = [
             Dialog(type: .text, speaker: .queenBee, text: "You are doing well so far..."),
             Dialog(type: .text, speaker: .queenBee, text: "Now you must take care, there are some deadly clouds caused by pesticides."),
-            Dialog(type: .text, speaker: .queenBee, text: "If you get close to the cloud, you lose all the radar senses and you might die... So be careful and stay away from them."),
+            Dialog(type: .text, speaker: .queenBee, text: "If you get close to the cloud, you lose all the radar senses and you might get lost forever... So be careful and stay away from them."),
             Dialog(type: .task, speaker: .queenBee, text: "Now you need to collect enough nectar to bring home. Fill the nectar bar by collecting pollen."),
         ]
         
