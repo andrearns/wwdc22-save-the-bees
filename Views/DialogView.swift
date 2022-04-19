@@ -10,6 +10,7 @@ import SwiftUI
 struct DialogView: View {
     
     @Binding var dialog: Dialog
+    @State var nextOpacity: Double = 0
     
     var hexagonWidth: CGFloat {
         (UIImage(named: "brownHexagonSprite")?.size.width)!
@@ -68,6 +69,8 @@ struct DialogView: View {
                                 .font(.system(size: 18, weight: .bold, design: .rounded))
                             }
                             .padding(.top)
+                            .opacity(nextOpacity)
+                            .animation(Animation.easeInOut(duration: 1).repeatForever(autoreverses: true), value: nextOpacity)
                         }
                     }
                     .padding(.vertical, 16)
@@ -81,5 +84,8 @@ struct DialogView: View {
         .frame(maxWidth: .infinity)
         .frame(height: 220)
         .padding()
+        .onAppear{
+            nextOpacity = 1
+        }
     }
 }
