@@ -22,7 +22,8 @@ final class DialogBank {
         ]
         
         self.firstStageDialogList = [
-            Dialog(type: .task, speaker: .queenBee, text: "Ok, let's start! In order to fly, lean the device to the desired direction using the accelerometer."),
+            Dialog(type: .text, speaker: .queenBee, text: "Ok! First you need to learn how to fly around."),
+            Dialog(type: .task, speaker: .queenBee, text: "In order to fly, tilt the device to the desired direction using the accelerometer."),
             Dialog(type: .text, speaker: .queenBee, text: "Okay okay! Great job little bee, you learn fast."),
             Dialog(type: .text, speaker: .queenBee, text: "I'm also giving you this radar, which will show where are the flowers full of pollen. Your other sisters are always updating it."),
             Dialog(type: .task, speaker: .queenBee, text: "Find a tasty flower using the radar and collect the pollen."),

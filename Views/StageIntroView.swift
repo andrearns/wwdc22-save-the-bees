@@ -8,9 +8,10 @@
 import SwiftUI
 
 struct StageIntroView: View {
-    @ObservedObject var gameViewModel: GameViewModel
     var title: String
     var description: String
+    
+    @ObservedObject var gameViewModel: GameViewModel
     @State var showGameView: Bool = false
     
     var body: some View {
@@ -36,6 +37,7 @@ struct StageIntroView: View {
         .onTapGesture {
             withAnimation {
                 showGameView = true
+                gameViewModel.stopInitialSound()
             }
         }
     }

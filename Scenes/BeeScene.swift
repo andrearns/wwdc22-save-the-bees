@@ -12,7 +12,6 @@ import SwiftUI
 
 class BeeScene: SKScene, SKPhysicsContactDelegate {
     
-    // How can I do this?
     var gameViewModel: GameViewModel?
     private let cam = SKCameraNode()
     private let motionManager = CMMotionManager()
@@ -22,7 +21,10 @@ class BeeScene: SKScene, SKPhysicsContactDelegate {
     var minimumXPosition: CGFloat?
     var maximumXPosition: CGFloat?
     var minimumYPosition: CGFloat?
-    var maximumYPosition: CGFloat?
+    var maximumYPosition: CGFloat = 0
+    var oldPosition = CGPoint()
+    var totalDistance: CGFloat = 0
+    var totalFlowersPollinated = 0
     
     override func didMove(to view: SKView) {
         physicsWorld.contactDelegate = self
@@ -30,7 +32,6 @@ class BeeScene: SKScene, SKPhysicsContactDelegate {
         let bee = BeeNode(xPosition: self.frame.midX, yPosition: self.frame.midY)
         self.bee?.pollenNode.position = CGPoint(x: self.frame.midX, y: self.frame.midY)
         self.bee = bee
-        // Change this
         self.bee?.physicsBody?.affectedByGravity = true
         
         addChild(bee)
@@ -49,6 +50,7 @@ class BeeScene: SKScene, SKPhysicsContactDelegate {
         self.setupAccelerometer()
         
         self.bee!.position = CGPoint(x: frame.midX, y: frame.midY)
+        self.oldPosition = bee.position
     }
     
     override func update(_ currentTime: TimeInterval) {
@@ -69,6 +71,66 @@ class BeeScene: SKScene, SKPhysicsContactDelegate {
         let position = bee!.position
         cam.position = position
         self.darkOverlayNode.position = self.cam.position
+        
+        if gameViewModel?.currentStageIndex == 1 {
+            stageOneTasksValidation()
+        } else if gameViewModel?.currentStageIndex == 2 {
+            stageTwoTasksValidation()
+        } else if gameViewModel?.currentStageIndex == 3 {
+            stageThreeTasksValidation()
+        }
+    }
+    
+    // MARK: - Stage functions
+    func stageOneTasksValidation() {
+        print("Stage 1 tasks validation running")
+        
+        if gameViewModel?.dialogIndex == 1 {
+            if totalDistance <= 2000 {
+                let deltaX = bee!.position.x - oldPosition.x
+                let deltaY = bee!.position.y - oldPosition.y
+                
+                print("Delta X:", deltaX)
+                print("Delta Y:", deltaY)
+                
+                let newDistance = sqrt(pow(deltaX, 2) + pow(deltaY, 2))
+                totalDistance += newDistance
+                
+                print("Total distance:", totalDistance)
+                
+                oldPosition = bee!.position
+                
+                if totalDistance >= 1200 {
+                    print("Player has learned how to fly")
+                    gameViewModel?.currentStage.dialogList[gameViewModel!.dialogIndex].isDone = true
+                    self.gameViewModel?.dialogIndex += 1
+                }
+            }
+        }
+        else if gameViewModel?.dialogIndex == 4 {
+            print("Player need to find a flower with pollen")
+            if bee!.hasPollen {
+                self.gameViewModel?.dialogIndex += 1
+            }
+        }
+        else if gameViewModel?.dialogIndex == 6 {
+            print("Player need to pollinate closed flower")
+            if totalFlowersPollinated > 0 {
+                self.gameViewModel?.dialogIndex += 1
+            }
+        }
+    }
+    
+    func stageTwoTasksValidation() {
+        print("Stage 2 tasks validation running")
+        // To do
+        
+    }
+    
+    func stageThreeTasksValidation() {
+        print("Stage 3 tasks validation running")
+        // To do
+        
     }
     
     // MARK: - Overlays
@@ -137,6 +199,7 @@ class BeeScene: SKScene, SKPhysicsContactDelegate {
                 }
                 
                 growFlowersAfterPollination(xPosition: secondBody.node!.position.x, yPosition: secondBody.node!.position.y)
+                totalFlowersPollinated += 1
             }
         }
         // Collision with pesticide
@@ -176,8 +239,7 @@ class BeeScene: SKScene, SKPhysicsContactDelegate {
     // MARK: - Flowers
     func spawnFirstFlowers(_ numberOfFlowers: Int) {
         for _ in 0...(numberOfFlowers - 1) {
-//            spawnNewFlower(xPosition: getRandomXPosition(minimumXPosition: minimumXPosition!, maximumXPosition: maximumXPosition!), yPosition: getRandomYPosition(minimumYPosition: minimumYPosition!, maximumYPosition: maximumYPosition!), hasPollen: true, categoryBitMask: UInt32(4))
-//            spawnNewClosedFlower(xPosition: getRandomXPosition(minimumXPosition: minimumXPosition!, maximumXPosition: maximumXPosition!), yPosition: getRandomYPosition(minimumYPosition: minimumYPosition!, maximumYPosition: maximumYPosition!))
+            // Review
             spawnNewFlower(xPosition: getRandomXPosition(minimumXPosition: -600, maximumXPosition: 600), yPosition: getRandomYPosition(minimumYPosition: -600, maximumYPosition: 600), hasPollen: true, categoryBitMask: CategoryBitMask.pollenCategory)
             spawnNewClosedFlower(xPosition: getRandomXPosition(minimumXPosition: -600, maximumXPosition: 600), yPosition: getRandomYPosition(minimumYPosition: -600, maximumYPosition: 600))
         }
@@ -201,7 +263,7 @@ class BeeScene: SKScene, SKPhysicsContactDelegate {
     }
     
     func spawnNewClosedFlower(xPosition: CGFloat, yPosition: CGFloat) {
-        let newClosedFlower = ClosedFlowerNode(xPosition: xPosition, yPosition: yPosition)
+        let newClosedFlower = ClosedFlowerNode(xPosition: xPosition, yPosition: yPosition, scale: 0)
         self.addChild(newClosedFlower)
         
         // SKAction to make the closed flower grow

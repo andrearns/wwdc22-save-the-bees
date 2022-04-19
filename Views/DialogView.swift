@@ -21,24 +21,27 @@ struct DialogView: View {
     var body: some View {
         HStack {
             ZStack {
-                RoundedRectangle(cornerRadius: 8)
-                    .foregroundColor(Color.beeBrown)
+                RoundedRectangle(cornerRadius: 30)
+                    .foregroundColor(Color.beeMidBrown)
                     .padding(.leading, hexagonWidth * 0.5)
-                    .frame(height: 219)
-                    .padding(.top, 0.5)
+//                    .frame(height: 219)
+                    .padding(.top, 1.25)
                 
                 HStack {
                     ZStack {
                         Image("brownHexagonSprite")
                             .resizable()
                             .aspectRatio(contentMode: .fit)
-                        Image("honeycombSprite")
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                        Image(dialog.speaker == .queenBee ? "queenBeeSprite" : "beeSprite")
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .padding(60)
+                        ZStack {
+                            Image("honeycombSprite")
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .padding(-20)
+                            Image(dialog.speaker == .queenBee ? "queenBeeSprite" : "beeSprite")
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .padding(60)
+                        }
                     }
                     
                     VStack(alignment: .leading) {
@@ -50,24 +53,24 @@ struct DialogView: View {
                         Text(dialog.text)
                             .lineLimit(2)
                             .foregroundColor(Color.white)
-                            .font(.system(size: 24, weight: .semibold, design: .rounded))
+                            .font(.system(size: 21, weight: .semibold, design: .rounded))
                             .multilineTextAlignment(.leading)
-                            .minimumScaleFactor(0.8)
+                            .minimumScaleFactor(0.6)
                         
-//                        if dialog.type == .text {
-//                            HStack {
-//                                Spacer()
-//                                HStack {
-//                                    Text("NEXT")
-//                                    Image(systemName: "chevron.right")
-//                                }
-//                                .foregroundColor(Color.beeYellow)
-//                                .font(.system(size: 18, weight: .bold, design: .rounded))
-//                            }
-//                            .padding(.top)
-//                        }
+                        if dialog.type == .text {
+                            HStack {
+                                Spacer()
+                                HStack {
+                                    Text("NEXT")
+                                    Image(systemName: "chevron.right")
+                                }
+                                .foregroundColor(Color.beeYellow)
+                                .font(.system(size: 18, weight: .bold, design: .rounded))
+                            }
+                            .padding(.top)
+                        }
                     }
-                    .padding(.vertical, 32)
+                    .padding(.vertical, 16)
                     .padding(.trailing, 32)
                     .frame(height: 220)
                     

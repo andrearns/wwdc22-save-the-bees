@@ -8,8 +8,10 @@
 import Foundation
 import SwiftUI
 import SpriteKit
+import AVFoundation
 
 class GameViewModel: ObservableObject {
+    var audioPlayer: AVAudioPlayer?
     var beeScene: BeeScene
     var currentStage: Stage
     
@@ -53,18 +55,18 @@ class GameViewModel: ObservableObject {
                 switch dialogIndex {
                 case 0:
                     print("Dialog 0")
-                case 1:
+                case 2:
                     withAnimation {
                         isRadarOn = true
                         self.beeScene.showDarkOverlay()
                     }
-                case 2:
+                case 3:
                     withAnimation {
                         self.beeScene.spawnFirstFlowers(currentStage.flowerCount)
                         self.beeScene.hideDarkOverlay()
                     }
-                case 3:
-                    print("Dialog 3")
+                case 4:
+                    print("Dialog 4")
                 case 5:
                     print("Dialog 5")
                 default:
@@ -95,5 +97,21 @@ class GameViewModel: ObservableObject {
             
             dialogIndex = 0
         }
+    }
+    
+    func playInitialSound() {
+        if let path = Bundle.main.path(forResource: "SoundIntro-WWDC22", ofType: "mp3") {
+            do {
+                self.audioPlayer = try AVAudioPlayer(contentsOf: URL(fileURLWithPath: path))
+                self.audioPlayer?.play()
+                self.audioPlayer?.numberOfLoops = 100
+            } catch {
+                print("Error")
+            }
+        }
+    }
+    
+    func stopInitialSound() {
+        self.audioPlayer?.stop()
     }
 }

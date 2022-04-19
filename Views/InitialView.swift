@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import AVFoundation
 
 struct InitialView: View {
     @State var tapOpacity: Double = 0.1
@@ -102,6 +103,7 @@ struct InitialView: View {
             }
             .onAppear {
                 tapOpacity = 1
+                gameViewModel.playInitialSound()
             }
             .statusBar(hidden: true)
         }

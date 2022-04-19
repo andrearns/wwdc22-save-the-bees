@@ -10,7 +10,7 @@ import SpriteKit
 
 class ClosedFlowerNode: SKSpriteNode {
     
-    init(xPosition: CGFloat, yPosition: CGFloat) {
+    init(xPosition: CGFloat, yPosition: CGFloat, scale: CGFloat) {
         super.init(texture: SKTexture(imageNamed: "closedFlowerSprite"), color: .clear, size: CGSize(width: 60, height: 60))
         
         physicsBody = SKPhysicsBody(circleOfRadius: 40)
@@ -21,6 +21,7 @@ class ClosedFlowerNode: SKSpriteNode {
         physicsBody?.categoryBitMask = CategoryBitMask.closedFlowerCategory
         physicsBody?.collisionBitMask = UInt32(0)
         physicsBody?.contactTestBitMask = UInt32(0)
+        setScale(0)
     }
     
     required init?(coder aDecoder: NSCoder) {

@@ -11,6 +11,7 @@ struct Dialog {
     var type: DialogType
     var speaker: DialogSpeaker
     var text: String
+    var isDone: Bool?
 }
 
 enum DialogType {

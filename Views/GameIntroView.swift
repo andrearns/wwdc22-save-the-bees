@@ -28,7 +28,7 @@ struct GameIntroView: View {
                         }
                     }
                 NavigationLink("", isActive: $showFirstStage) {
-                    StageIntroView(gameViewModel: gameViewModel, title: gameViewModel.currentStage.title, description: gameViewModel.currentStage.subtitle)
+                    StageIntroView(title: gameViewModel.currentStage.title, description: gameViewModel.currentStage.subtitle, gameViewModel: gameViewModel)
                 }
             }
         }

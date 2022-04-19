@@ -23,13 +23,18 @@ struct GameView: View {
             }
             VStack {
                 Spacer()
-                DialogView(dialog: $gameViewModel.currentStage.dialogList[gameViewModel.dialogIndex])
-                    .opacity(gameViewModel.isDialogOn ? 1 : 0)
-                    .onTapGesture {
-                        gameViewModel.dialogTapHandle()
-                    }
+                if gameViewModel.currentStage.dialogList[gameViewModel.dialogIndex].type == .text {
+                    DialogView(dialog: $gameViewModel.currentStage.dialogList[gameViewModel.dialogIndex])
+                        .opacity(gameViewModel.isDialogOn ? 1 : 0)
+                        .onTapGesture {
+                            gameViewModel.dialogTapHandle()
+                        }
+                } else {
+                    TaskView(dialog: $gameViewModel.currentStage.dialogList[gameViewModel.dialogIndex])
+                }
+                
                 NavigationLink("", isActive: $gameViewModel.showNextStage) {
-                    StageIntroView(gameViewModel: gameViewModel, title: gameViewModel.currentStage.title, description: gameViewModel.currentStage.subtitle)
+                    StageIntroView(title: gameViewModel.currentStage.title, description: gameViewModel.currentStage.subtitle, gameViewModel: gameViewModel)
                 }
                 
                 NavigationLink("", isActive: $gameViewModel.showFinalScreen, destination: {
