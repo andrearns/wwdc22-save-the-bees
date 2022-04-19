@@ -8,13 +8,13 @@ import PackageDescription
 import AppleProductTypes
 
 let package = Package(
-    name: "WWDC22",
+    name: "Save the Bees",
     platforms: [
         .iOS("15.2")
     ],
     products: [
         .iOSApplication(
-            name: "WWDC22",
+            name: "Save the Bees",
             targets: ["AppModule"],
             bundleIdentifier: "com.andrearns.WWDC22",
             teamIdentifier: "VWZ6P536SX",
@@ -38,7 +38,9 @@ let package = Package(
         .executableTarget(
             name: "AppModule",
             path: ".",
-            resources: [.process("Resources")]
+            resources: [
+                .process("Resources")
+            ]
         )
     ]
 )
