@@ -36,12 +36,16 @@ final class DialogBank {
             Dialog(type: .text, speaker: .queenBee, text: "You are doing well so far..."),
             Dialog(type: .text, speaker: .queenBee, text: "Now you must take care, there are some deadly clouds caused by pesticides."),
             Dialog(type: .text, speaker: .queenBee, text: "If you get close to the cloud, you lose all the radar senses and you might get lost forever... So be careful and stay away from them."),
-            Dialog(type: .task, speaker: .queenBee, text: "Now you need to collect enough nectar to bring home. Fill the nectar bar by collecting pollen."),
+            Dialog(type: .text, speaker: .queenBee, text: "Now you have a goal to collect pollen and pollinate 3 other flowers. Are you ready?"),
+            Dialog(type: .task, speaker: .queenBee, text: "Pollinate 3 red flowers."),
+            Dialog(type: .text, speaker: .queenBee, text: "I'm glad that you completed your goal and you are still alive! A lot of your sisters have died because of the pesticides lately."),
         ]
         
         self.thirdStageDialogList = [
             Dialog(type: .text, speaker: .queenBee, text: "Now you graduated. Congratulations, my darling!"),
-            Dialog(type: .task, speaker: .queenBee, text: "Now pollinate the world!"),
+            Dialog(type: .text, speaker: .queenBee, text: "In this place there are multiple types of flowers. To pollinate, you need to match the pollen color."),
+            Dialog(type: .task, speaker: .queenBee, text: "Pollinate 8 flowers of multiple colors."),
+            Dialog(type: .text, speaker: .queenBee, text: "Great job, my daughter! You have completed your mission for today."),
         ]
     }
 }

@@ -44,11 +44,18 @@ struct GameView: View {
             VStack {
                 HStack {
                     Spacer()
-                    Image(gameViewModel.isDangerous ? "dangerRadarSprite" : "radarFrameSprite")
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(width: radarWidth, height: radarWidth)
-                        .padding()
+                    VStack {
+                        Image(gameViewModel.isDangerous ? "dangerRadarSprite" : "radarFrameSprite")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: radarWidth, height: radarWidth)
+                            .padding()
+                        
+                        if gameViewModel.currentStageIndex > 1 && gameViewModel.isGoalDisplayed {
+                            FlowerGoalView(currentCount: $gameViewModel.flowersPollinated, goal: gameViewModel.currentStage.pollinationGoal!, maxWidth: radarWidth)
+                                .padding(.top)
+                        }
+                    }
                 }
                 Spacer()
             }

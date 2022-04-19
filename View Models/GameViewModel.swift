@@ -20,7 +20,9 @@ class GameViewModel: ObservableObject {
     @Published var showFinalScreen: Bool = false
     @Published var isDialogOn: Bool = true
     @Published var isDangerous: Bool = false
+    @Published var isGoalDisplayed: Bool = false
     @Published var dialogIndex = 0
+    @Published var flowersPollinated = 0
 
     var currentStageIndex: Int {
         didSet {
@@ -32,7 +34,6 @@ class GameViewModel: ObservableObject {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                     self.beeScene.removeAllChildren()
                     self.beeScene = stage.beeScene
-                    self.beeScene.spawnFirstFlowers(stage.flowerCount)
                 }
             }
         }
@@ -52,39 +53,34 @@ class GameViewModel: ObservableObject {
         if dialogIndex < currentStage.dialogList.count - 1 {
             // STAGE 1
             if currentStageIndex == 1 {
-                switch dialogIndex {
-                case 0:
-                    print("Dialog 0")
-                case 2:
+                if dialogIndex == 2 {
                     withAnimation {
                         isRadarOn = true
                         self.beeScene.showDarkOverlay()
                     }
-                case 3:
+                } else if dialogIndex == 3 {
                     withAnimation {
                         self.beeScene.spawnFirstFlowers(currentStage.flowerCount)
                         self.beeScene.hideDarkOverlay()
                     }
-                case 4:
-                    print("Dialog 4")
-                case 5:
-                    print("Dialog 5")
-                default:
-                    print("Dialog x")
                 }
             }
             // STAGE 2
             else if currentStageIndex == 2 {
-                
+                if dialogIndex == 3 {
+                    self.beeScene.spawnFirstFlowers(currentStage.flowerCount)
+                    self.isGoalDisplayed = true
+                }
             }
             // STAGE 3
             else if currentStageIndex == 3 {
-                
+                if dialogIndex == 1 {
+                    self.beeScene.spawnFirstFlowers(currentStage.flowerCount)
+                    self.isGoalDisplayed = true
+                }
             }
             
-//            if currentStage.dialogList[dialogIndex].type == .text {
-                dialogIndex += 1
-//            }
+            dialogIndex += 1
         } else {
             if currentStageIndex < StageBank.shared.stageList.count {
                 showNextStage = true
@@ -95,20 +91,21 @@ class GameViewModel: ObservableObject {
             
             currentStageIndex += 1
             
+            flowersPollinated = 0
             dialogIndex = 0
         }
     }
     
     func playInitialSound() {
-        if let path = Bundle.main.path(forResource: "SoundIntro-WWDC22", ofType: "mp3") {
-            do {
-                self.audioPlayer = try AVAudioPlayer(contentsOf: URL(fileURLWithPath: path))
-                self.audioPlayer?.play()
-                self.audioPlayer?.numberOfLoops = 100
-            } catch {
-                print("Error")
-            }
-        }
+//        if let path = Bundle.main.path(forResource: "SoundIntro-WWDC22", ofType: "mp3") {
+//            do {
+//                self.audioPlayer = try AVAudioPlayer(contentsOf: URL(fileURLWithPath: path))
+//                self.audioPlayer?.play()
+//                self.audioPlayer?.numberOfLoops = 100
+//            } catch {
+//                print("Error")
+//            }
+//        }
     }
     
     func stopInitialSound() {

@@ -24,7 +24,6 @@ class BeeScene: SKScene, SKPhysicsContactDelegate {
     var maximumYPosition: CGFloat = 0
     var oldPosition = CGPoint()
     var totalDistance: CGFloat = 0
-    var totalFlowersPollinated = 0
     
     override func didMove(to view: SKView) {
         physicsWorld.contactDelegate = self
@@ -115,7 +114,7 @@ class BeeScene: SKScene, SKPhysicsContactDelegate {
         }
         else if gameViewModel?.dialogIndex == 6 {
             print("Player need to pollinate closed flower")
-            if totalFlowersPollinated > 0 {
+            if gameViewModel!.flowersPollinated > 0 {
                 self.gameViewModel?.dialogIndex += 1
             }
         }
@@ -123,14 +122,16 @@ class BeeScene: SKScene, SKPhysicsContactDelegate {
     
     func stageTwoTasksValidation() {
         print("Stage 2 tasks validation running")
-        // To do
-        
+        if gameViewModel?.flowersPollinated == gameViewModel?.currentStage.pollinationGoal && gameViewModel?.dialogIndex == 4 {
+            self.gameViewModel?.dialogIndex += 1
+        }
     }
     
     func stageThreeTasksValidation() {
         print("Stage 3 tasks validation running")
-        // To do
-        
+        if gameViewModel?.flowersPollinated == gameViewModel?.currentStage.pollinationGoal && gameViewModel?.dialogIndex == 2 {
+            self.gameViewModel?.dialogIndex += 1
+        }
     }
     
     // MARK: - Overlays
@@ -199,7 +200,7 @@ class BeeScene: SKScene, SKPhysicsContactDelegate {
                 }
                 
                 growFlowersAfterPollination(xPosition: secondBody.node!.position.x, yPosition: secondBody.node!.position.y)
-                totalFlowersPollinated += 1
+                gameViewModel!.flowersPollinated += 1
             }
         }
         // Collision with pesticide

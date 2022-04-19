@@ -16,4 +16,5 @@ struct Stage {
     var dialogList: [Dialog]
     var flowerCount: Int
     var rect: CGRect
+    var pollinationGoal: Int?
 }
