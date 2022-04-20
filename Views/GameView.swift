@@ -66,10 +66,6 @@ struct GameView: View {
         .navigationBarBackButtonHidden(true)
         .onAppear {
             gameViewModel.currentStage.beeScene.physicsBody = SKPhysicsBody(edgeLoopFrom: CGPath(ellipseIn: gameViewModel.currentStage.rect, transform: .none))
-            gameViewModel.currentStage.beeScene.minimumXPosition = -(gameViewModel.currentStage.rect.width * 1.41 / 4)
-            gameViewModel.currentStage.beeScene.maximumXPosition = (gameViewModel.currentStage.rect.width * 1.41 / 4)
-            gameViewModel.currentStage.beeScene.minimumYPosition = -(gameViewModel.currentStage.rect.width * 1.41 / 4)
-            gameViewModel.currentStage.beeScene.maximumYPosition = (gameViewModel.currentStage.rect.width * 1.41 / 4)
         }
     }
 }

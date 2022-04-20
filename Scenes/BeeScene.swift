@@ -18,10 +18,6 @@ class BeeScene: SKScene, SKPhysicsContactDelegate {
     private var bee: BeeNode?
     private var flyingAnimation: SKAction!
     private var darkOverlayNode: SKSpriteNode!
-    var minimumXPosition: CGFloat?
-    var maximumXPosition: CGFloat?
-    var minimumYPosition: CGFloat?
-    var maximumYPosition: CGFloat = 0
     var oldPosition = CGPoint()
     var totalDistance: CGFloat = 0
     
