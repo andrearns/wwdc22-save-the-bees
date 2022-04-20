@@ -14,7 +14,8 @@ struct Stage {
     var index: Int
     var beeScene: BeeScene
     var dialogList: [Dialog]
-    var flowerCount: Int
     var rect: CGRect
     var pollinationGoal: Int?
+    var openedFlowersPositionList: [CGPoint]
+    var closedFlowersPositionList: [CGPoint]
 }

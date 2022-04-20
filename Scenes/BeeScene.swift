@@ -238,11 +238,14 @@ class BeeScene: SKScene, SKPhysicsContactDelegate {
     }
     
     // MARK: - Flowers
-    func spawnFirstFlowers(_ numberOfFlowers: Int) {
-        for _ in 0...(numberOfFlowers - 1) {
+    func spawnFirstFlowers(openedFlowersPositionList: [CGPoint], closedFlowersPositionList: [CGPoint]) {
+        for i in 0...(openedFlowersPositionList.count - 1) {
             // Review
-            spawnNewFlower(xPosition: getRandomXPosition(minimumXPosition: -600, maximumXPosition: 600), yPosition: getRandomYPosition(minimumYPosition: -600, maximumYPosition: 600), hasPollen: true, categoryBitMask: CategoryBitMask.pollenCategory)
-            spawnNewClosedFlower(xPosition: getRandomXPosition(minimumXPosition: -600, maximumXPosition: 600), yPosition: getRandomYPosition(minimumYPosition: -600, maximumYPosition: 600))
+            spawnNewFlower(xPosition: openedFlowersPositionList[i].x, yPosition: openedFlowersPositionList[i].y, hasPollen: true, categoryBitMask: CategoryBitMask.pollenCategory)
+        }
+        
+        for i in 0...(closedFlowersPositionList.count - 1) {
+            spawnNewClosedFlower(xPosition: closedFlowersPositionList[i].x, yPosition: closedFlowersPositionList[i].y)
         }
     }
     

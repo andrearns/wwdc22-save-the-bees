@@ -60,7 +60,7 @@ class GameViewModel: ObservableObject {
                     }
                 } else if dialogIndex == 3 {
                     withAnimation {
-                        self.beeScene.spawnFirstFlowers(currentStage.flowerCount)
+                        self.beeScene.spawnFirstFlowers(openedFlowersPositionList: currentStage.openedFlowersPositionList, closedFlowersPositionList: currentStage.closedFlowersPositionList)
                         self.beeScene.hideDarkOverlay()
                     }
                 }
@@ -68,14 +68,14 @@ class GameViewModel: ObservableObject {
             // STAGE 2
             else if currentStageIndex == 2 {
                 if dialogIndex == 3 {
-                    self.beeScene.spawnFirstFlowers(currentStage.flowerCount)
+                    self.beeScene.spawnFirstFlowers(openedFlowersPositionList: currentStage.openedFlowersPositionList, closedFlowersPositionList: currentStage.closedFlowersPositionList)
                     self.isGoalDisplayed = true
                 }
             }
             // STAGE 3
             else if currentStageIndex == 3 {
                 if dialogIndex == 1 {
-                    self.beeScene.spawnFirstFlowers(currentStage.flowerCount)
+                    self.beeScene.spawnFirstFlowers(openedFlowersPositionList: currentStage.openedFlowersPositionList, closedFlowersPositionList: currentStage.closedFlowersPositionList)
                     self.isGoalDisplayed = true
                 }
             }
