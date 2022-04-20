@@ -15,9 +15,9 @@ class BeeScene: SKScene, SKPhysicsContactDelegate {
     var gameViewModel: GameViewModel?
     private let cam = SKCameraNode()
     private let motionManager = CMMotionManager()
-    private var bee: BeeNode?
     private var flyingAnimation: SKAction!
     private var darkOverlayNode: SKSpriteNode!
+    var bee: BeeNode?
     var oldPosition = CGPoint()
     var totalDistance: CGFloat = 0
     
@@ -63,9 +63,11 @@ class BeeScene: SKScene, SKPhysicsContactDelegate {
             }
         }
         
-        let position = bee!.position
-        cam.position = position
-        self.darkOverlayNode.position = self.cam.position
+        if self.gameViewModel!.isGameOn {
+            let position = bee!.position
+            cam.position = position
+            self.darkOverlayNode.position = self.cam.position
+        }
         
         if gameViewModel?.currentStageIndex == 1 {
             stageOneTasksValidation()

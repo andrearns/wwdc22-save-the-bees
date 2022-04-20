@@ -21,6 +21,7 @@ class GameViewModel: ObservableObject {
     @Published var isDialogOn: Bool = true
     @Published var isDangerous: Bool = false
     @Published var isGoalDisplayed: Bool = false
+    @Published var isGameOn = true
     @Published var dialogIndex = 0
     @Published var flowersPollinated = 0
 
@@ -86,13 +87,24 @@ class GameViewModel: ObservableObject {
                 showNextStage = true
             } else {
                 isDialogOn = false
-                showFinalScreen = true
+                showFinalView()
+//                showFinalScreen = true
             }
             
             currentStageIndex += 1
             
             flowersPollinated = 0
             dialogIndex = 0
+        }
+    }
+    
+    func showFinalView() {
+        withAnimation {
+            beeScene.camera?.setScale(5)
+            isRadarOn = false
+            isGoalDisplayed = false
+            beeScene.camera?.position = CGPoint(x: 0, y: -400)
+            isGameOn = false
         }
     }
     

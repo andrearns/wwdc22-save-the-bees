@@ -60,6 +60,13 @@ struct GameView: View {
                 Spacer()
             }
             .opacity(gameViewModel.isRadarOn ? 1 : 0)
+            
+            if !gameViewModel.isGameOn {
+                VStack {
+                    Spacer()
+                    FinalDialog()
+                }
+            }
         }
         .ignoresSafeArea()
         .statusBar(hidden: true)

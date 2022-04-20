@@ -44,7 +44,7 @@ final class DialogBank {
         self.thirdStageDialogList = [
             Dialog(type: .text, speaker: .queenBee, text: "Now you graduated. Congratulations, my darling!"),
             Dialog(type: .text, speaker: .queenBee, text: "In this place there are multiple types of flowers. To pollinate, you need to match the pollen color."),
-            Dialog(type: .task, speaker: .queenBee, text: "Pollinate 8 flowers of multiple colors."),
+            Dialog(type: .task, speaker: .queenBee, text: "Pollinate 6 flowers of multiple colors."),
             Dialog(type: .text, speaker: .queenBee, text: "Great job, my daughter! You have completed your mission for today."),
         ]
     }
