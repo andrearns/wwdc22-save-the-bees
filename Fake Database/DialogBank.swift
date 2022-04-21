@@ -16,11 +16,13 @@ final class DialogBank {
     var thirdStageDialogList: [Dialog] = []
     
     private init() {
+        // INTRO
         self.gameIntroDialogList = [
             Dialog(type: .text, speaker: .queenBee, text: "Your hour has come, you must work for me, my daughter. You must collect the nectar from the flowers to feed me."),
             Dialog(type: .text, speaker: .queenBee, text: "But first I need to teach you the basics, to save you from a tragic death."),
         ]
         
+        // FIRST STAGE: FIRST DAY AT WORK
         self.firstStageDialogList = [
             Dialog(type: .text, speaker: .queenBee, text: "Ok! First you need to learn how to fly around."),
             Dialog(type: .task, speaker: .queenBee, text: "In order to fly, tilt the device to the desired direction using the accelerometer."),
@@ -32,6 +34,7 @@ final class DialogBank {
             Dialog(type: .text, speaker: .queenBee, text: "Great job, darling! Did you know that 70% of all plants are pollinated by ous? We have a huge responsability in the world."),
         ]
         
+        // SECOND STAGE: ENTERING THE DANGER ZONE
         self.secondStageDialogList = [
             Dialog(type: .text, speaker: .queenBee, text: "You are doing well so far..."),
             Dialog(type: .text, speaker: .queenBee, text: "Now you must take care, there are some deadly clouds caused by pesticides."),
@@ -41,6 +44,7 @@ final class DialogBank {
             Dialog(type: .text, speaker: .queenBee, text: "I'm glad that you completed your goal and you are still alive! A lot of your sisters have died because of the pesticides lately."),
         ]
         
+        // THIRD STAGE: COLORFUL WORLD
         self.thirdStageDialogList = [
             Dialog(type: .text, speaker: .queenBee, text: "Now you graduated. Congratulations, my darling!"),
             Dialog(type: .text, speaker: .queenBee, text: "In this place there are multiple types of flowers. To pollinate, you need to match the pollen color."),

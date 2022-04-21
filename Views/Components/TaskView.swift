@@ -9,6 +9,7 @@ import SwiftUI
 
 struct TaskView: View {
     @Binding var dialog: Dialog
+    // Remember to remove this
     var onTap: () -> ()
     
     var body: some View {
@@ -17,12 +18,12 @@ struct TaskView: View {
                 VStack(alignment: .leading) {
                     Text("TASK")
                         .foregroundColor(Color.beeYellow)
-                        .font(.system(size: 24, weight: .bold, design: .rounded))
+                        .font(.system(size: 28, weight: .bold, design: .rounded))
                         .padding(.bottom, 1)
                     
                     Text(dialog.text)
                         .foregroundColor(Color.white)
-                        .font(.system(size: 18, weight: .semibold, design: .rounded))
+                        .font(.system(size: 21, weight: .semibold, design: .rounded))
                 }
                 Spacer()
             }
@@ -57,6 +58,7 @@ struct TaskView: View {
         }
         .padding()
         .frame(maxHeight: 200)
+        // Remember to remove this
         .onTapGesture {
             onTap()
         }

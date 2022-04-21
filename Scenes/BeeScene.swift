@@ -83,7 +83,8 @@ class BeeScene: SKScene, SKPhysicsContactDelegate {
         print("Stage 1 tasks validation running")
         
         if gameViewModel?.dialogIndex == 1 {
-            if totalDistance <= 1500 {
+            // Remember to change to 1500
+            if totalDistance <= 500 {
                 let deltaX = bee!.position.x - oldPosition.x
                 let deltaY = bee!.position.y - oldPosition.y
                 
@@ -97,23 +98,22 @@ class BeeScene: SKScene, SKPhysicsContactDelegate {
                 
                 oldPosition = bee!.position
                 
-                if totalDistance >= 1500 {
+                if totalDistance >= 500 {
                     print("Player has learned how to fly")
-                    gameViewModel?.currentStage.dialogList[gameViewModel!.dialogIndex].isDone = true
-                    self.gameViewModel?.dialogIndex += 1
+                    completeTask()
                 }
             }
         }
         else if gameViewModel?.dialogIndex == 4 {
             print("Player need to find a flower with pollen")
             if bee!.hasPollen {
-                self.gameViewModel?.dialogIndex += 1
+                completeTask()
             }
         }
         else if gameViewModel?.dialogIndex == 6 {
             print("Player need to pollinate closed flower")
             if gameViewModel!.flowersPollinated > 0 {
-                self.gameViewModel?.dialogIndex += 1
+                completeTask()
             }
         }
     }
@@ -121,13 +121,20 @@ class BeeScene: SKScene, SKPhysicsContactDelegate {
     func stageTwoTasksValidation() {
         print("Stage 2 tasks validation running")
         if gameViewModel?.flowersPollinated == gameViewModel?.currentStage.pollinationGoal && gameViewModel?.dialogIndex == 4 {
-            self.gameViewModel?.dialogIndex += 1
+            completeTask()
         }
     }
     
     func stageThreeTasksValidation() {
         print("Stage 3 tasks validation running")
         if gameViewModel?.flowersPollinated == gameViewModel?.currentStage.pollinationGoal && gameViewModel?.dialogIndex == 2 {
+            completeTask()
+        }
+    }
+    
+    func completeTask() {
+        self.gameViewModel?.currentStage.dialogList[self.gameViewModel!.dialogIndex].isDone = true
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
             self.gameViewModel?.dialogIndex += 1
         }
     }

@@ -31,6 +31,7 @@ struct GameView: View {
                             gameViewModel.dialogTapHandle()
                         }
                 } else {
+                    // Remember to remove the closure
                     TaskView(dialog: $gameViewModel.currentStage.dialogList[gameViewModel.dialogIndex]) {
                         gameViewModel.dialogIndex += 1
                     }

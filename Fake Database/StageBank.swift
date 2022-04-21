@@ -25,7 +25,6 @@ class StageBank {
                 openedFlowersPositionList: FlowerPositionsBank.shared.firstStageOpenedFlowersPositionList,
                 closedFlowersPositionList: FlowerPositionsBank.shared.firstStageClosedFlowersPositionList
             ),
-            
             Stage(
                 title: "Stage 2",
                 subtitle: "Entering the danger zone",
@@ -37,7 +36,6 @@ class StageBank {
                 openedFlowersPositionList: FlowerPositionsBank.shared.secondStageOpenedFlowersPositionList,
                 closedFlowersPositionList: FlowerPositionsBank.shared.secondStageClosedFlowersPositionList
             ),
-            
             Stage(
                 title: "Stage 3",
                 subtitle: "Colorful world",

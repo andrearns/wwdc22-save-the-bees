@@ -25,7 +25,6 @@ struct DialogView: View {
                 RoundedRectangle(cornerRadius: 30)
                     .foregroundColor(Color.beeMidBrown)
                     .padding(.leading, hexagonWidth * 0.5)
-//                    .frame(height: 219)
                     .padding(.top, 1.25)
                 
                 HStack {

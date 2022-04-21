@@ -49,6 +49,7 @@ class GameViewModel: ObservableObject {
         beeScene.scaleMode = .aspectFit
     }
     
+    // MARK: - Handler when dialog view is tapped
     func dialogTapHandle() {
         if dialogIndex < currentStage.dialogList.count - 1 {
             // STAGE 1
@@ -83,8 +84,8 @@ class GameViewModel: ObservableObject {
                     self.beeScene.bee!.physicsBody?.affectedByGravity = true
                 }
             }
-            
             dialogIndex += 1
+            self.currentStage.dialogList[self.dialogIndex].isDone = false
         } else {
             if currentStageIndex < StageBank.shared.stageList.count {
                 showNextStage = true
@@ -94,28 +95,40 @@ class GameViewModel: ObservableObject {
             }
             
             currentStageIndex += 1
-            
             flowersPollinated = 0
             dialogIndex = 0
         }
     }
     
+    // MARK: - Functions to show final view
     func showFinalView() {
-        withAnimation(Animation.easeInOut(duration: 2)) {
-            if UIScreen.main.bounds.width < 800 {
-                self.beeScene.camera?.setScale(6)
-                beeScene.camera?.position = CGPoint(x: 0, y: -800)
-            } else {
-                self.beeScene.camera?.setScale(5)
-                beeScene.camera?.position = CGPoint(x: 0, y: -1000)
-            }
-        }
-
+        moveCameraToFinalPosition()
         isRadarOn = false
         isGoalDisplayed = false
         isGameOn = false
     }
     
+    func moveCameraToFinalPosition() {
+        withAnimation(Animation.easeInOut(duration: 2)) {
+            // iPad Pro (9.7-inch) and smaller devices
+            if UIScreen.main.bounds.width < 800 {
+                self.beeScene.camera?.setScale(6)
+                beeScene.camera?.position = CGPoint(x: 0, y: -800)
+            }
+            // iPad Pro (11-inch)
+            else if UIScreen.main.bounds.width >= 800 && UIScreen.main.bounds.width < 1000 {
+                self.beeScene.camera?.setScale(5)
+                beeScene.camera?.position = CGPoint(x: 0, y: -1000)
+            }
+            // iPad Pro (12.9-inch)
+            else {
+                self.beeScene.camera?.setScale(5)
+                beeScene.camera?.position = CGPoint(x: 0, y: -1300)
+            }
+        }
+    }
+    
+    // MARK: - Sound
     func playInitialSound() {
 //        if let path = Bundle.main.path(forResource: "SoundIntro-WWDC22", ofType: "mp3") {
 //            do {
@@ -132,7 +145,7 @@ class GameViewModel: ObservableObject {
         self.audioPlayer?.stop()
     }
     
-    // Radar
+    // MARK: - Radar functions
     func showFlower(flowerRealPosition: CGPoint) -> Bool {
         let realDistance = getRealDistance(flowerPosition: flowerRealPosition)
         if realDistance > 640 {
