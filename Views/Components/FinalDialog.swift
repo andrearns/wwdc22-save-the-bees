@@ -11,7 +11,7 @@ struct FinalDialog: View {
     var body: some View {
         VStack {
             Text("CONGRATULATIONS!")
-                .font(.system(size: 30, weight: .bold, design: .rounded))
+                .font(.system(size: 40, weight: .bold, design: .rounded))
                 .foregroundColor(Color.beeYellow)
                 .padding(.top)
                 .padding(.horizontal)
@@ -19,7 +19,7 @@ struct FinalDialog: View {
             Text("CHANGE THIS TEXT!!! You must  work for me, you lazy. You must collect the nectar from the flowers to feed me.  You must  work for me, you lazy. You must collect the nectar from the flowers to feed me. You must  work for me, you lazy. You must collect the nectar from the flowers to feed me. You must  work for me, you lazy. You must collect the nectar from the flowers to feed me. You must collect the nectar from the flowers to feed me. You must  work for me, you lazy. You must collect the nectar from the flowers to feed me.")
                 .multilineTextAlignment(.center)
                 .padding()
-                .font(.system(size: 18, weight: .medium, design: .rounded))
+                .font(.system(size: 21, weight: .medium, design: .rounded))
                 .foregroundColor(Color.white)
         }
         .padding()

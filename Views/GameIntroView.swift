@@ -17,7 +17,7 @@ struct GameIntroView: View {
             Image("gameIntroBackgroundImage")
                 .resizable()
                 .aspectRatio(contentMode: .fit)
-                .frame(maxWidth: UIScreen.main.bounds.width + 40)
+                .scaleEffect(1.1)
             
             VStack {
                 Spacer()
@@ -35,6 +35,8 @@ struct GameIntroView: View {
         .navigationBarBackButtonHidden(true)
         .statusBar(hidden: true)
         .edgesIgnoringSafeArea(.all)
+        .navigationBarHidden(true)
+        .frame(maxHeight: UIScreen.main.bounds.height)
     }
 }
 

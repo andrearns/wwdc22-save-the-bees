@@ -27,7 +27,7 @@ class BeeScene: SKScene, SKPhysicsContactDelegate {
         let bee = BeeNode(xPosition: self.frame.midX, yPosition: self.frame.midY)
         self.bee?.pollenNode.position = CGPoint(x: self.frame.midX, y: self.frame.midY)
         self.bee = bee
-        self.bee?.physicsBody?.affectedByGravity = true
+        self.bee?.physicsBody?.affectedByGravity = false
         
         addChild(bee)
         
@@ -83,7 +83,7 @@ class BeeScene: SKScene, SKPhysicsContactDelegate {
         print("Stage 1 tasks validation running")
         
         if gameViewModel?.dialogIndex == 1 {
-            if totalDistance <= 2000 {
+            if totalDistance <= 1500 {
                 let deltaX = bee!.position.x - oldPosition.x
                 let deltaY = bee!.position.y - oldPosition.y
                 
@@ -97,7 +97,7 @@ class BeeScene: SKScene, SKPhysicsContactDelegate {
                 
                 oldPosition = bee!.position
                 
-                if totalDistance >= 1200 {
+                if totalDistance >= 1500 {
                     print("Player has learned how to fly")
                     gameViewModel?.currentStage.dialogList[gameViewModel!.dialogIndex].isDone = true
                     self.gameViewModel?.dialogIndex += 1

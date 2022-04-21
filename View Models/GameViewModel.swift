@@ -17,7 +17,6 @@ class GameViewModel: ObservableObject {
     
     @Published var isRadarOn: Bool = false
     @Published var showNextStage: Bool = false
-    @Published var showFinalScreen: Bool = false
     @Published var isDialogOn: Bool = true
     @Published var isDangerous: Bool = false
     @Published var isGoalDisplayed: Bool = false
@@ -54,7 +53,9 @@ class GameViewModel: ObservableObject {
         if dialogIndex < currentStage.dialogList.count - 1 {
             // STAGE 1
             if currentStageIndex == 1 {
-                if dialogIndex == 2 {
+                if dialogIndex == 0 {
+                    self.beeScene.bee!.physicsBody?.affectedByGravity = true
+                } else if dialogIndex == 2 {
                     withAnimation {
                         isRadarOn = true
                         self.beeScene.showDarkOverlay()
@@ -71,6 +72,7 @@ class GameViewModel: ObservableObject {
                 if dialogIndex == 3 {
                     self.beeScene.spawnFirstFlowers(openedFlowersPositionList: currentStage.openedFlowersPositionList, closedFlowersPositionList: currentStage.closedFlowersPositionList)
                     self.isGoalDisplayed = true
+                    self.beeScene.bee!.physicsBody?.affectedByGravity = true
                 }
             }
             // STAGE 3
@@ -99,13 +101,17 @@ class GameViewModel: ObservableObject {
     }
     
     func showFinalView() {
-        withAnimation {
-            beeScene.camera?.setScale(5)
-            isRadarOn = false
-            isGoalDisplayed = false
-            beeScene.camera?.position = CGPoint(x: 0, y: -400)
-            isGameOn = false
+        if UIScreen.main.bounds.width < 800 {
+            self.beeScene.camera?.setScale(6)
+            beeScene.camera?.position = CGPoint(x: 0, y: -800)
+        } else {
+            self.beeScene.camera?.setScale(5)
+            beeScene.camera?.position = CGPoint(x: 0, y: -1000)
         }
+        
+        isRadarOn = false
+        isGoalDisplayed = false
+        isGameOn = false
     }
     
     func playInitialSound() {
@@ -122,5 +128,50 @@ class GameViewModel: ObservableObject {
     
     func stopInitialSound() {
         self.audioPlayer?.stop()
+    }
+    
+    // Radar
+    func showFlower(flowerRealPosition: CGPoint) -> Bool {
+        let realDistance = getRealDistance(flowerPosition: flowerRealPosition)
+        if realDistance > 640 {
+            return false
+        } else {
+            return true
+        }
+    }
+    
+    func getRealDistance(flowerPosition: CGPoint) -> CGFloat {
+        if let bee = beeScene.bee {
+            let a = bee.position.y - flowerPosition.y
+            let b = bee.position.x - flowerPosition.x
+            let distance = sqrt(pow(a, 2) + pow(b, 2))
+            return distance
+        }
+        return 0
+    }
+    
+    func getGraphDistance(flowerPosition: CGPoint, radarWidth: CGFloat) -> CGFloat {
+        let realDistance = getRealDistance(flowerPosition: flowerPosition)
+        let proportionalDistance = (realDistance * radarWidth)/1280
+        return proportionalDistance
+    }
+    
+    func degreesToRadians(degrees: Double) -> Double {
+        return degrees * .pi / 180.0
+    }
+    
+    func radiansToDegrees(radians: Double) -> Double {
+        return radians * 180.0 / .pi
+    }
+
+    func getAngle(flowerPosition : CGPoint) -> CGFloat {
+        if let bee = beeScene.bee {
+            let y = bee.position.y - flowerPosition.y
+            let hip = getRealDistance(flowerPosition: flowerPosition)
+            let sin = y/hip
+            let arcsen = asin(sin)
+            return arcsen
+        }
+        return 0
     }
 }

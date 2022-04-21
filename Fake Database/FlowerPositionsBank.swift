@@ -51,7 +51,6 @@ class FlowerPositionsBank {
         self.secondStageClosedFlowersPositionList = [
             CGPoint(x: -447, y: 1076),
             CGPoint(x: 519, y: 1096),
-            CGPoint(x: -885, y: 916),
             CGPoint(x: -591, y: 530),
             CGPoint(x: 612, y: 560),
             CGPoint(x: -501, y: -471),
@@ -75,7 +74,6 @@ class FlowerPositionsBank {
         self.thirdStageClosedFlowersPositionList = [
             CGPoint(x: -447, y: 1076),
             CGPoint(x: 519, y: 1096),
-            CGPoint(x: -885, y: 916),
             CGPoint(x: -591, y: 530),
             CGPoint(x: 612, y: 560),
             CGPoint(x: -501, y: -471),

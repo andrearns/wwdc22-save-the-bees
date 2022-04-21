@@ -11,6 +11,9 @@ struct MyApp: App {
         WindowGroup {
             InitialView(gameViewModel: gameViewModel)
                 .navigationViewStyle(.stack)
+                .onAppear {
+                    print("UIScreen size:", UIScreen.main.bounds.size)
+                }
         }
     }
 }

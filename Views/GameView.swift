@@ -8,6 +8,7 @@ struct GameView: View {
     var radarWidth: CGFloat {
         return UIScreen.main.bounds.width / 4
     }
+    @State var finalDialogPaddingBottom: CGFloat = -UIScreen.main.bounds.height/2
     
     init(currentStage: Stage, beeScene: BeeScene) {
         self.gameViewModel = GameViewModel(currentStage: currentStage, beeScene: beeScene)
@@ -30,26 +31,20 @@ struct GameView: View {
                             gameViewModel.dialogTapHandle()
                         }
                 } else {
-                    TaskView(dialog: $gameViewModel.currentStage.dialogList[gameViewModel.dialogIndex])
+                    TaskView(dialog: $gameViewModel.currentStage.dialogList[gameViewModel.dialogIndex]) {
+                        gameViewModel.dialogIndex += 1
+                    }
                 }
                 
                 NavigationLink("", isActive: $gameViewModel.showNextStage) {
                     StageIntroView(title: gameViewModel.currentStage.title, description: gameViewModel.currentStage.subtitle, gameViewModel: gameViewModel)
                 }
-                
-                NavigationLink("", isActive: $gameViewModel.showFinalScreen, destination: {
-                    FinalView()
-                })
             }
             VStack {
                 HStack {
                     Spacer()
                     VStack {
-                        Image(gameViewModel.isDangerous ? "dangerRadarSprite" : "radarFrameSprite")
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: radarWidth, height: radarWidth)
-                            .padding()
+                        RadarView(gameViewModel: self.gameViewModel, width: radarWidth, isDangerous: gameViewModel.isDangerous, openFlowersPositionList: gameViewModel.currentStage.openedFlowersPositionList)
                         
                         if gameViewModel.currentStageIndex > 1 && gameViewModel.isGoalDisplayed {
                             FlowerGoalView(currentCount: $gameViewModel.flowersPollinated, goal: gameViewModel.currentStage.pollinationGoal!, maxWidth: radarWidth)
@@ -65,6 +60,13 @@ struct GameView: View {
                 VStack {
                     Spacer()
                     FinalDialog()
+                        .padding(32)
+                        .padding(.bottom, finalDialogPaddingBottom)
+                        .onAppear {
+                            withAnimation(Animation.easeInOut(duration: 2)) {
+                                finalDialogPaddingBottom = 0
+                            }
+                        }
                 }
             }
         }
@@ -73,6 +75,9 @@ struct GameView: View {
         .navigationBarBackButtonHidden(true)
         .onAppear {
             gameViewModel.currentStage.beeScene.physicsBody = SKPhysicsBody(edgeLoopFrom: CGPath(ellipseIn: gameViewModel.currentStage.rect, transform: .none))
+            if gameViewModel.currentStageIndex > 1 {
+                self.gameViewModel.isRadarOn = true
+            }
         }
     }
 }
