@@ -66,6 +66,7 @@ struct GameView: View {
                             withAnimation(Animation.easeInOut(duration: 2)) {
                                 finalDialogPaddingBottom = 0
                             }
+                            
                         }
                 }
             }

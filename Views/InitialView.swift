@@ -71,10 +71,14 @@ struct InitialView: View {
                 }
                 VStack {
                     Spacer()
-                    Rectangle()
-                        .foregroundColor(Color.beeGrassGreen)
+//                    Rectangle()
+//                        .foregroundColor(Color.beeGrassGreen)
+//                        .frame(maxHeight: UIScreen.main.bounds.height / 3)
+//                        .padding(0)
+                    Image("initialViewGround")
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
                         .frame(maxHeight: UIScreen.main.bounds.height / 3)
-                        .padding(0)
                 }
                 VStack {
                     Image("hiveTreeSprite")
@@ -88,7 +92,7 @@ struct InitialView: View {
                         .animation(Animation.easeInOut(duration: 1.5).repeatForever(autoreverses: true), value: tapOpacity)
                         .padding(.top, 64)
                         .font(.system(size: 60, weight: .bold, design: .rounded))
-                        .foregroundColor(Color.beeBrown)
+                        .foregroundColor(Color.beeMidBrown)
                 }
                 NavigationLink("", isActive: $startGame, destination: {
                     GameIntroView(gameViewModel: gameViewModel)

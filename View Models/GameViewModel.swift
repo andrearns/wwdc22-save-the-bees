@@ -80,6 +80,7 @@ class GameViewModel: ObservableObject {
                 if dialogIndex == 1 {
                     self.beeScene.spawnFirstFlowers(openedFlowersPositionList: currentStage.openedFlowersPositionList, closedFlowersPositionList: currentStage.closedFlowersPositionList)
                     self.isGoalDisplayed = true
+                    self.beeScene.bee!.physicsBody?.affectedByGravity = true
                 }
             }
             
@@ -90,7 +91,6 @@ class GameViewModel: ObservableObject {
             } else {
                 isDialogOn = false
                 showFinalView()
-//                showFinalScreen = true
             }
             
             currentStageIndex += 1
@@ -101,14 +101,16 @@ class GameViewModel: ObservableObject {
     }
     
     func showFinalView() {
-        if UIScreen.main.bounds.width < 800 {
-            self.beeScene.camera?.setScale(6)
-            beeScene.camera?.position = CGPoint(x: 0, y: -800)
-        } else {
-            self.beeScene.camera?.setScale(5)
-            beeScene.camera?.position = CGPoint(x: 0, y: -1000)
+        withAnimation(Animation.easeInOut(duration: 2)) {
+            if UIScreen.main.bounds.width < 800 {
+                self.beeScene.camera?.setScale(6)
+                beeScene.camera?.position = CGPoint(x: 0, y: -800)
+            } else {
+                self.beeScene.camera?.setScale(5)
+                beeScene.camera?.position = CGPoint(x: 0, y: -1000)
+            }
         }
-        
+
         isRadarOn = false
         isGoalDisplayed = false
         isGameOn = false
