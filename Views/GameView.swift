@@ -31,7 +31,9 @@ struct GameView: View {
                             gameViewModel.dialogTapHandle()
                         }
                 } else {
-                    TaskView(dialog: $gameViewModel.currentStage.dialogList[gameViewModel.dialogIndex])
+                    TaskView(dialog: $gameViewModel.currentStage.dialogList[gameViewModel.dialogIndex], onTap: {
+                        gameViewModel.dialogIndex += 1
+                    })
                 }
                 
                 NavigationLink("", isActive: $gameViewModel.showNextStage) {
