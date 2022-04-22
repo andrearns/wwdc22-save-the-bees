@@ -14,26 +14,44 @@ class BeeScene: SKScene, SKPhysicsContactDelegate {
     
     var gameViewModel: GameViewModel?
     
-    var radarMaxDistance: CGFloat = UIScreen.main.bounds.height * 0.75
-    var radarNode: SKSpriteNode!
-    var dangerRadarNode: SKSpriteNode!
     var bee: BeeNode?
+    private var darkOverlayNode: SKSpriteNode!
+    private let cam = SKCameraNode()
+    
+    // Radar
+    var radarNode: SKSpriteNode!
+    var radarLineNode: SKSpriteNode!
+    var dangerRadarNode: SKSpriteNode!
+    var timeWhenRadarWasTurnedOn: TimeInterval = 0
+    var timeRadarIsOn: TimeInterval = 0
+    var radarMaxDistance: CGFloat = UIScreen.main.bounds.height * 0.75
+    var radarWidth: CGFloat {
+        UIScreen.main.bounds.width/4
+    }
+    var radarTimer: Timer?
+    var timeWhenTheRadarWasTurnedOn: TimeInterval = 0
+    var radarCurrentAngle: Double = 0
+    
+    // Used to calculate the total distance the been has flyed
     var oldPosition = CGPoint()
     var totalDistance: CGFloat = 0
+    
+    // Nodes lists to make the radar work
     var openedFlowerNodeList: [FlowerNode] = []
     var closedFlowerNodeList: [ClosedFlowerNode] = []
     var openedFlowerNodesInRadarList: [SKSpriteNode] = []
     var closedFlowerNodesInRadarList: [SKSpriteNode] = []
     
-    private let cam = SKCameraNode()
+    // Core Motion Manager to use the Accelerometer
     private let motionManager = CMMotionManager()
+    
+    // Actions
     private var flyingAnimation: SKAction!
-    private var darkOverlayNode: SKSpriteNode!
+    private let blinkAction = SKAction.repeatForever(SKAction.sequence([SKAction.fadeAlpha(to: 0.6, duration: 0.6), SKAction.fadeAlpha(to: 1, duration: 0.6)]))
+    private let radarFlowersBlinkAction = SKAction.repeatForever(SKAction.sequence([SKAction.fadeAlpha(to: 1, duration: 0.8), SKAction.fadeAlpha(to: 0, duration: 0.8)]))
     
-    var radarWidth: CGFloat {
-        UIScreen.main.bounds.width/4
-    }
     
+    // MARK: - Scene didMove
     override func didMove(to view: SKView) {
         physicsWorld.contactDelegate = self
         
@@ -64,6 +82,7 @@ class BeeScene: SKScene, SKPhysicsContactDelegate {
         self.oldPosition = bee!.position
     }
     
+    // MARK: - Scene update
     override func update(_ currentTime: TimeInterval) {
         if let accelerometerData = motionManager.accelerometerData {
             if let currentVelocity = bee!.physicsBody?.velocity {
@@ -93,226 +112,21 @@ class BeeScene: SKScene, SKPhysicsContactDelegate {
             stageThreeTasksValidation()
         }
         
-        updateRadar(openedFlowerNodeList: openedFlowerNodeList, closedFlowerNodeList: closedFlowerNodeList)
-    }
-    
-    // MARK: - Radar
-    func setupRadar(openFlowersPositionList: [CGPoint], closedFlowersPositionList: [CGPoint]) {
-        radarNode = SKSpriteNode(imageNamed: "radarFrameSprite")
-        radarNode.size = CGSize(width: radarWidth, height: radarWidth)
-        radarNode.alpha = 0
-        radarNode.zPosition = 1007
+        updateRadar(openedFlowerNodeList: openedFlowerNodeList, closedFlowerNodeList: closedFlowerNodeList, currentTime: currentTime)
         
-        let radarLineNode = SKSpriteNode(imageNamed: "radarLineSprite")
-        radarLineNode.size = CGSize(width: radarWidth, height: radarWidth)
-        let spinAction = SKAction.repeatForever(SKAction.rotate(byAngle: -2 * .pi, duration: 4))
-        
-        radarNode.addChild(radarLineNode)
-        radarLineNode.run(spinAction)
-        
-        createOpenFlowerNodesInRadar(openFlowersPositionList: openFlowersPositionList)
-        createClosedFlowerNodesInRadar(closedFlowersPositionList: closedFlowersPositionList)
-    }
-    
-    func setupDangerRadar() {
-        dangerRadarNode = SKSpriteNode(imageNamed: "dangerRadarSprite")
-        dangerRadarNode.size = CGSize(width: radarWidth, height: radarWidth)
-        dangerRadarNode.alpha = 0
-        dangerRadarNode.zPosition = 1007
-        addChild(dangerRadarNode)
-    }
-    
-    func showFlower(flowerRealPosition: CGPoint) -> Bool {
-        let realDistance = getRealDistance(flowerPosition: flowerRealPosition)
-        if realDistance > radarMaxDistance {
-            return false
-        } else {
-            return true
-        }
-    }
-    
-    func getRealDistance(flowerPosition: CGPoint) -> CGFloat {
-        if let bee = bee {
-            let a = bee.position.y - flowerPosition.y
-            let b = bee.position.x - flowerPosition.x
-            let distance = sqrt(pow(a, 2) + pow(b, 2))
-            return distance
-        }
-        return 0
-    }
-    
-    func getGraphDistance(flowerPosition: CGPoint) -> CGFloat {
-        let realDistance = getRealDistance(flowerPosition: flowerPosition)
-        let proportionalDistance = (realDistance * radarWidth) / (radarMaxDistance * 2)
-        return proportionalDistance
-    }
-
-    func createOpenFlowerNodesInRadar(openFlowersPositionList: [CGPoint]) {
-        for _ in 0...openFlowersPositionList.count - 1 {
-            let flowerDotNode = SKSpriteNode(imageNamed: "redFlowerSprite")
-            flowerDotNode.size = CGSize(width: 30, height: 30)
-            radarNode.addChild(flowerDotNode)
-            openedFlowerNodesInRadarList.append(flowerDotNode)
-            print("Open flower created in radar")
-        }
-    }
-    
-    func createClosedFlowerNodesInRadar(closedFlowersPositionList: [CGPoint]) {
-        for _ in 0...closedFlowersPositionList.count - 1 {
-            let closedFlowerDotNode = SKSpriteNode(imageNamed: "closedFlowerSprite")
-            closedFlowerDotNode.size = CGSize(width: 20, height: 20)
-            radarNode.addChild(closedFlowerDotNode)
-            closedFlowerNodesInRadarList.append(closedFlowerDotNode)
-            print("Closed flower created in radar")
-        }
-    }
-    
-    func updateOpenedFlowerNodePositionInRadar(openedFlowerNodeInRadar: SKSpriteNode, openedFlowerNode: FlowerNode) {
-        if openedFlowerNode.hasPollen {
-            let relativeXPosition = openedFlowerNode.position.x - bee!.position.x
-            let relativeYPosition = openedFlowerNode.position.y - bee!.position.y
-            
-            let graphXPosition = relativeXPosition * radarWidth / (radarMaxDistance * 2)
-            let graphYPosition = relativeYPosition * radarWidth / (radarMaxDistance * 2)
-            
-            openedFlowerNodeInRadar.position = CGPoint(x: graphXPosition, y: graphYPosition)
-            
-            if showFlower(flowerRealPosition: openedFlowerNode.position) {
-                openedFlowerNodeInRadar.alpha = 1
-            } else {
-                openedFlowerNodeInRadar.alpha = 0
-            }
-        } else {
-            openedFlowerNodeInRadar.alpha = 0
-        }
-    }
-    
-    func updateClosedFlowerNodePositionInRadar(closedFlowerNodeInRadar: SKSpriteNode, closedFlowerNode: ClosedFlowerNode) {
-        let relativeXPosition = closedFlowerNode.position.x - bee!.position.x
-        let relativeYPosition = closedFlowerNode.position.y - bee!.position.y
-        
-        let graphXPosition = relativeXPosition * radarWidth / (radarMaxDistance * 2)
-        let graphYPosition = relativeYPosition * radarWidth / (radarMaxDistance * 2)
-        
-        closedFlowerNodeInRadar.position = CGPoint(x: graphXPosition, y: graphYPosition)
-        
-        if showFlower(flowerRealPosition: closedFlowerNode.position) {
-            closedFlowerNodeInRadar.alpha = 1
-        } else {
-            closedFlowerNodeInRadar.alpha = 0
-        }
-    }
-    
-    func updateRadar(openedFlowerNodeList: [FlowerNode], closedFlowerNodeList: [ClosedFlowerNode]) {
         if gameViewModel!.isRadarOn {
-            radarNode.alpha = 1
-            radarNode.position = CGPoint(x: cam.position.x + frame.maxX - radarWidth/2 - 16, y: cam.position.y + frame.maxY - radarWidth/2 - 16)
-            dangerRadarNode.position = radarNode.position
-            
-            if gameViewModel!.isDangerous {
-                radarNode.alpha = 0
-                dangerRadarNode.alpha = 1
-            } else {
-                radarNode.alpha = 1
-                dangerRadarNode.alpha = 0
+            if timeWhenRadarWasTurnedOn == 0 {
+                timeWhenRadarWasTurnedOn = currentTime
+                playRadarRotation()
             }
             
-            if openedFlowerNodeList.count > 0 {
-                for i in 0...openedFlowerNodesInRadarList.count - 1 {
-                    updateOpenedFlowerNodePositionInRadar(openedFlowerNodeInRadar: openedFlowerNodesInRadarList[i], openedFlowerNode: openedFlowerNodeList[i])
-                }
-                
-                for i in 0...closedFlowerNodesInRadarList.count - 1 {
-                    updateClosedFlowerNodePositionInRadar(closedFlowerNodeInRadar: closedFlowerNodesInRadarList[i], closedFlowerNode: closedFlowerNodeList[i])
-                }
-            }
-        } else {
-            radarNode.alpha = 0
+            timeRadarIsOn = currentTime - timeWhenRadarWasTurnedOn
+            print("Time radar is on:", timeRadarIsOn)
+            
+            let angle = 180 * (timeRadarIsOn.truncatingRemainder(dividingBy: 4)) / 2
+            radarCurrentAngle = angle
+            print("Current angle:", radarCurrentAngle)
         }
-    }
-    
-    // MARK: - Stage functions
-    func stageOneTasksValidation() {
-        print("Stage 1 tasks validation running")
-        
-        if gameViewModel?.dialogIndex == 1 {
-            if totalDistance <= 1200 {
-                let deltaX = bee!.position.x - oldPosition.x
-                let deltaY = bee!.position.y - oldPosition.y
-                
-                print("Delta X:", deltaX)
-                print("Delta Y:", deltaY)
-                
-                let newDistance = sqrt(pow(deltaX, 2) + pow(deltaY, 2))
-                totalDistance += newDistance
-                
-                print("Total distance:", totalDistance)
-                
-                oldPosition = bee!.position
-                
-                if totalDistance >= 1200 {
-                    print("Player has learned how to fly")
-                    completeTask()
-                }
-            }
-        }
-        else if gameViewModel?.dialogIndex == 4 {
-            print("Player need to find a flower with pollen")
-            if bee!.hasPollen {
-                completeTask()
-            }
-        }
-        else if gameViewModel?.dialogIndex == 6 {
-            print("Player need to pollinate closed flower")
-            if gameViewModel!.flowersPollinated > 0 {
-                completeTask()
-            }
-        }
-    }
-    
-    func stageTwoTasksValidation() {
-        print("Stage 2 tasks validation running")
-        if gameViewModel?.flowersPollinated == gameViewModel?.currentStage.pollinationGoal && gameViewModel?.dialogIndex == 4 {
-            completeTask()
-        }
-    }
-    
-    func stageThreeTasksValidation() {
-        print("Stage 3 tasks validation running")
-        if gameViewModel?.flowersPollinated == gameViewModel?.currentStage.pollinationGoal && gameViewModel?.dialogIndex == 2 {
-            completeTask()
-        }
-    }
-    
-    func completeTask() {
-        self.gameViewModel?.currentStage.dialogList[self.gameViewModel!.dialogIndex].isDone = true
-        self.gameViewModel?.dialogIndex += 1
-    }
-    
-    // MARK: - Overlays
-    func showDarkOverlay() {
-        self.darkOverlayNode.alpha = 0.5
-    }
-    
-    func hideDarkOverlay() {
-        self.darkOverlayNode.alpha = 0
-    }
-    
-    // MARK: - Bee animation
-    func setupFlyingAnimation() {
-        var flyingTextureList: [SKTexture] = []
-        
-        for i in 1...6 {
-            flyingTextureList.append(SKTexture(imageNamed: "beeAnimation\(i)"))
-        }
-        
-        flyingAnimation = SKAction.repeatForever(SKAction.animate(with: flyingTextureList, timePerFrame: 0.03))
-    }
-    
-    // MARK: - Accelerometer
-    func setupAccelerometer() {
-        self.motionManager.startAccelerometerUpdates()
-        self.motionManager.accelerometerUpdateInterval = 0.1
     }
     
     // MARK: - Collisions
@@ -341,9 +155,8 @@ class BeeScene: SKScene, SKPhysicsContactDelegate {
                     }
                     
                     openedFlowerNodeList[index!].hasPollen = false
-                    flowerNode.hasPollen = false
                     
-                    openedFlowerNodeList[index!].physicsBody?.categoryBitMask = CategoryBitMask.none
+                    flowerNode.hasPollen = false
                     flowerNode.physicsBody?.categoryBitMask = CategoryBitMask.none
                 }
                 
@@ -359,9 +172,17 @@ class BeeScene: SKScene, SKPhysicsContactDelegate {
                 print("Grow flowers")
                 bee!.removePollen()
                 
-                if let closedFlowerNode = secondBody.node as? ClosedFlowerNode {
-                    closedFlowerNode.texture = SKTexture(imageNamed: "redFlowerSprite")
-                    closedFlowerNode.physicsBody?.categoryBitMask = CategoryBitMask.none
+                if let flowerNode = secondBody.node as? ClosedFlowerNode {
+                    let index = closedFlowerNodeList.firstIndex { closedFlowerNode in
+                        let hasSimilarXPosition = closedFlowerNode.position.x.rounded() == flowerNode.position.x.rounded()
+                        let hasSimilarYPosition = closedFlowerNode.position.y.rounded() == flowerNode.position.y.rounded()
+                        return (hasSimilarXPosition && hasSimilarYPosition)
+                    }
+                    
+                    closedFlowerNodeList[index!].hasBeenPollinated = true
+                    flowerNode.hasBeenPollinated = true
+                    
+                    flowerNode.physicsBody?.categoryBitMask = CategoryBitMask.none
                 }
                 
                 growFlowersAfterPollination(xPosition: secondBody.node!.position.x, yPosition: secondBody.node!.position.y)
@@ -402,6 +223,246 @@ class BeeScene: SKScene, SKPhysicsContactDelegate {
         }
     }
     
+    // MARK: - Radar
+    private func updateRadar(openedFlowerNodeList: [FlowerNode], closedFlowerNodeList: [ClosedFlowerNode], currentTime: TimeInterval) {
+        if gameViewModel!.isRadarOn {
+            radarNode.alpha = 1
+            radarNode.position = CGPoint(x: cam.position.x + frame.maxX - radarWidth/2 - 16, y: cam.position.y + frame.maxY - radarWidth/2 - 16)
+            dangerRadarNode.position = radarNode.position
+            
+            if gameViewModel!.isDangerous {
+                radarNode.alpha = 0
+                dangerRadarNode.alpha = 1
+                dangerRadarNode.run(blinkAction)
+            } else {
+                radarNode.alpha = 1
+                dangerRadarNode.alpha = 0
+                dangerRadarNode.removeAllActions()
+            }
+            
+            if openedFlowerNodeList.count > 0 {
+                for i in 0...openedFlowerNodesInRadarList.count - 1 {
+                    updateOpenedFlowerNodePositionInRadar(openedFlowerNodeInRadar: openedFlowerNodesInRadarList[i], openedFlowerNode: openedFlowerNodeList[i])
+                }
+                
+                for i in 0...closedFlowerNodesInRadarList.count - 1 {
+                    updateClosedFlowerNodePositionInRadar(closedFlowerNodeInRadar: closedFlowerNodesInRadarList[i], closedFlowerNode: closedFlowerNodeList[i])
+                }
+            }
+        } else {
+            radarNode.alpha = 0
+        }
+    }
+    
+    private func updateOpenedFlowerNodePositionInRadar(openedFlowerNodeInRadar: SKSpriteNode, openedFlowerNode: FlowerNode) {
+        if openedFlowerNode.hasPollen && gameViewModel!.showFlowersInRadar {
+            let relativeXPosition = openedFlowerNode.position.x - bee!.position.x
+            let relativeYPosition = openedFlowerNode.position.y - bee!.position.y
+            
+            let graphXPosition = relativeXPosition * radarWidth / (radarMaxDistance * 2)
+            let graphYPosition = relativeYPosition * radarWidth / (radarMaxDistance * 2)
+            
+            openedFlowerNodeInRadar.position = CGPoint(x: graphXPosition, y: graphYPosition)
+            
+            if shouldShowNodeInRadar(flowerRealPosition: openedFlowerNode.position) {
+                openedFlowerNodeInRadar.alpha = 1
+            } else {
+                openedFlowerNodeInRadar.alpha = 0
+            }
+        } else {
+            openedFlowerNodeInRadar.alpha = 0
+        }
+    }
+    
+    private func updateClosedFlowerNodePositionInRadar(closedFlowerNodeInRadar: SKSpriteNode, closedFlowerNode: ClosedFlowerNode) {
+        if !closedFlowerNode.hasBeenPollinated && gameViewModel!.showFlowersInRadar {
+            let relativeXPosition = closedFlowerNode.position.x - bee!.position.x
+            let relativeYPosition = closedFlowerNode.position.y - bee!.position.y
+            
+            let graphXPosition = relativeXPosition * radarWidth / (radarMaxDistance * 2)
+            let graphYPosition = relativeYPosition * radarWidth / (radarMaxDistance * 2)
+            
+            closedFlowerNodeInRadar.position = CGPoint(x: graphXPosition, y: graphYPosition)
+            
+            if shouldShowNodeInRadar(flowerRealPosition: closedFlowerNode.position) {
+                closedFlowerNodeInRadar.alpha = 1
+            } else {
+                closedFlowerNodeInRadar.alpha = 0
+            }
+        } else {
+            closedFlowerNodeInRadar.alpha = 0
+        }
+    }
+    
+    private func setupRadar(openFlowersPositionList: [CGPoint], closedFlowersPositionList: [CGPoint]) {
+        radarNode = SKSpriteNode(imageNamed: "radarFrameSprite")
+        radarNode.size = CGSize(width: radarWidth, height: radarWidth)
+        radarNode.alpha = 0
+        radarNode.zPosition = 1007
+        
+        radarLineNode = SKSpriteNode(imageNamed: "radarLineSprite")
+        radarLineNode.size = CGSize(width: radarWidth, height: radarWidth)
+        
+        radarNode.addChild(radarLineNode)
+        
+        createOpenFlowerNodesInRadar(openFlowersPositionList: openFlowersPositionList)
+        createClosedFlowerNodesInRadar(closedFlowersPositionList: closedFlowersPositionList)
+    }
+    
+    func playRadarRotation() {
+        let spinAction = SKAction.repeatForever(SKAction.rotate(byAngle: 2 * .pi, duration: 4))
+        radarLineNode.run(spinAction)
+    }
+    
+    private func setupDangerRadar() {
+        dangerRadarNode = SKSpriteNode(imageNamed: "dangerRadarSprite")
+        dangerRadarNode.size = CGSize(width: radarWidth, height: radarWidth)
+        dangerRadarNode.alpha = 0
+        dangerRadarNode.zPosition = 1007
+        addChild(dangerRadarNode)
+    }
+    
+    private func shouldShowNodeInRadar(flowerRealPosition: CGPoint) -> Bool {
+        let realDistance = getRealDistance(flowerPosition: flowerRealPosition)
+        if realDistance > radarMaxDistance {
+            return false
+        } else {
+            return true
+        }
+    }
+    
+    private func getRealDistance(flowerPosition: CGPoint) -> CGFloat {
+        if let bee = bee {
+            let a = bee.position.y - flowerPosition.y
+            let b = bee.position.x - flowerPosition.x
+            let distance = sqrt(pow(a, 2) + pow(b, 2))
+            return distance
+        }
+        return 0
+    }
+    
+    private func angleBetween(flowerPosition: CGPoint) -> Double {
+        if let bee = bee {
+            let a = flowerPosition.y - bee.position.y
+            let b = flowerPosition.x - bee.position.x
+            let hip = sqrt(pow(a, 2) + pow(b, 2))
+            
+            let asin = asin(a / hip)
+            print("Asin:", asin)
+            return asin
+        }
+        return 0
+    }
+    
+    private func getGraphDistance(flowerPosition: CGPoint) -> CGFloat {
+        let realDistance = getRealDistance(flowerPosition: flowerPosition)
+        let proportionalDistance = (realDistance * radarWidth) / (radarMaxDistance * 2)
+        return proportionalDistance
+    }
+
+    private func createOpenFlowerNodesInRadar(openFlowersPositionList: [CGPoint]) {
+        for _ in 0...openFlowersPositionList.count - 1 {
+            let flowerDotNode = SKSpriteNode(imageNamed: "redFlowerSprite")
+            flowerDotNode.size = CGSize(width: 30, height: 30)
+            radarNode.addChild(flowerDotNode)
+            openedFlowerNodesInRadarList.append(flowerDotNode)
+            print("Open flower created in radar")
+        }
+    }
+    
+    private func createClosedFlowerNodesInRadar(closedFlowersPositionList: [CGPoint]) {
+        for _ in 0...closedFlowersPositionList.count - 1 {
+            let closedFlowerDotNode = SKSpriteNode(imageNamed: "closedFlowerSprite")
+            closedFlowerDotNode.size = CGSize(width: 20, height: 20)
+            radarNode.addChild(closedFlowerDotNode)
+            closedFlowerNodesInRadarList.append(closedFlowerDotNode)
+            print("Closed flower created in radar")
+        }
+    }
+    
+    // MARK: - Overlays
+    func showDarkOverlay() {
+        self.darkOverlayNode.alpha = 0.5
+    }
+    
+    func hideDarkOverlay() {
+        self.darkOverlayNode.alpha = 0
+    }
+
+    // MARK: - Stage functions
+    private func stageOneTasksValidation() {
+        //  Stage 1 tasks validation
+        if gameViewModel?.dialogIndex == 1 {
+            if totalDistance <= 1200 {
+                let deltaX = bee!.position.x - oldPosition.x
+                let deltaY = bee!.position.y - oldPosition.y
+                
+                print("Delta X:", deltaX)
+                print("Delta Y:", deltaY)
+                
+                let newDistance = sqrt(pow(deltaX, 2) + pow(deltaY, 2))
+                totalDistance += newDistance
+                
+                print("Total distance:", totalDistance)
+                
+                oldPosition = bee!.position
+                
+                if totalDistance >= 1200 {
+                    print("Player has learned how to fly")
+                    completeTask()
+                }
+            }
+        }
+        else if gameViewModel?.dialogIndex == 4 {
+            //  Player need to find a flower with pollen
+            if bee!.hasPollen {
+                completeTask()
+            }
+        }
+        else if gameViewModel?.dialogIndex == 6 {
+            //  Player need to pollinate closed flower
+            if gameViewModel!.flowersPollinated > 0 {
+                completeTask()
+            }
+        }
+    }
+    
+    private func stageTwoTasksValidation() {
+        //  Stage 2 tasks validation running
+        if gameViewModel?.flowersPollinated == gameViewModel?.currentStage.pollinationGoal && gameViewModel?.dialogIndex == 4 {
+            completeTask()
+        }
+    }
+    
+    private func stageThreeTasksValidation() {
+        //  Stage 3 tasks validation running
+        if gameViewModel?.flowersPollinated == gameViewModel?.currentStage.pollinationGoal && gameViewModel?.dialogIndex == 2 {
+            completeTask()
+        }
+    }
+    
+    private func completeTask() {
+        self.gameViewModel?.currentStage.dialogList[self.gameViewModel!.dialogIndex].isDone = true
+        self.gameViewModel?.dialogIndex += 1
+    }
+    
+    // MARK: - Bee animation
+    private func setupFlyingAnimation() {
+        var flyingTextureList: [SKTexture] = []
+        
+        for i in 1...6 {
+            flyingTextureList.append(SKTexture(imageNamed: "beeAnimation\(i)"))
+        }
+        
+        flyingAnimation = SKAction.repeatForever(SKAction.animate(with: flyingTextureList, timePerFrame: 0.03))
+    }
+    
+    // MARK: - Accelerometer
+    private func setupAccelerometer() {
+        self.motionManager.startAccelerometerUpdates()
+        self.motionManager.accelerometerUpdateInterval = 0.1
+    }
+    
     // MARK: - Flowers
     func spawnFirstFlowers(openedFlowersPositionList: [CGPoint], closedFlowersPositionList: [CGPoint]) {
         for i in 0...(openedFlowersPositionList.count - 1) {
@@ -417,7 +478,7 @@ class BeeScene: SKScene, SKPhysicsContactDelegate {
         }
     }
     
-    func growFlowersAfterPollination(xPosition: CGFloat, yPosition: CGFloat) {
+    private func growFlowersAfterPollination(xPosition: CGFloat, yPosition: CGFloat) {
         for _ in 0...6 {
             let randomCloseXPosition = getRandomXPosition(minimumXPosition: xPosition - 100, maximumXPosition: xPosition + 100)
             let randomCloseYPosition = getRandomYPosition(minimumYPosition: yPosition - 100, maximumYPosition: yPosition + 100)
@@ -425,7 +486,7 @@ class BeeScene: SKScene, SKPhysicsContactDelegate {
         }
     }
     
-    func spawnNewFlower(xPosition: CGFloat, yPosition: CGFloat, hasPollen: Bool, categoryBitMask: UInt32) {
+    private func spawnNewFlower(xPosition: CGFloat, yPosition: CGFloat, hasPollen: Bool, categoryBitMask: UInt32) {
         let newFlower = FlowerNode(xPosition: xPosition, yPosition: yPosition, hasPollen: hasPollen, scale: 0, categoryBitMask: categoryBitMask)
         self.addChild(newFlower)
         
@@ -434,7 +495,7 @@ class BeeScene: SKScene, SKPhysicsContactDelegate {
         newFlower.run(action)
     }
     
-    func spawnNewClosedFlower(xPosition: CGFloat, yPosition: CGFloat) {
+    private func spawnNewClosedFlower(xPosition: CGFloat, yPosition: CGFloat) {
         let newClosedFlower = ClosedFlowerNode(xPosition: xPosition, yPosition: yPosition, scale: 0)
         self.addChild(newClosedFlower)
         
@@ -443,15 +504,15 @@ class BeeScene: SKScene, SKPhysicsContactDelegate {
         newClosedFlower.run(action)
     }
     
-    func getRandomXPosition(minimumXPosition: CGFloat, maximumXPosition: CGFloat) -> CGFloat {
+    private func getRandomXPosition(minimumXPosition: CGFloat, maximumXPosition: CGFloat) -> CGFloat {
         CGFloat.random(in: minimumXPosition...maximumXPosition)
     }
     
-    func getRandomYPosition(minimumYPosition: CGFloat, maximumYPosition: CGFloat) -> CGFloat {
+    private func getRandomYPosition(minimumYPosition: CGFloat, maximumYPosition: CGFloat) -> CGFloat {
         CGFloat.random(in: minimumYPosition...maximumYPosition)
     }
     
-    func getRandomScale() -> CGFloat {
+    private func getRandomScale() -> CGFloat {
         CGFloat.random(in: (0.8)...(1.2))
     }
 }

@@ -18,6 +18,7 @@ class GameViewModel: ObservableObject {
     @Published var isRadarOn: Bool = false
     @Published var showNextStage: Bool = false
     @Published var isDialogOn: Bool = true
+    @Published var showFlowersInRadar: Bool = false
     @Published var isDangerous: Bool = false
     @Published var isGoalDisplayed: Bool = false
     @Published var isGameOn = true
@@ -59,11 +60,12 @@ class GameViewModel: ObservableObject {
                 } else if dialogIndex == 2 {
                     withAnimation {
                         isRadarOn = true
+                        self.showFlowersInRadar = true
+                        self.beeScene.spawnFirstFlowers(openedFlowersPositionList: currentStage.openedFlowersPositionList, closedFlowersPositionList: currentStage.closedFlowersPositionList)
                         self.beeScene.showDarkOverlay()
                     }
                 } else if dialogIndex == 3 {
                     withAnimation {
-                        self.beeScene.spawnFirstFlowers(openedFlowersPositionList: currentStage.openedFlowersPositionList, closedFlowersPositionList: currentStage.closedFlowersPositionList)
                         self.beeScene.hideDarkOverlay()
                     }
                 }
@@ -73,6 +75,7 @@ class GameViewModel: ObservableObject {
                 if dialogIndex == 3 {
                     self.beeScene.spawnFirstFlowers(openedFlowersPositionList: currentStage.openedFlowersPositionList, closedFlowersPositionList: currentStage.closedFlowersPositionList)
                     self.isGoalDisplayed = true
+                    self.showFlowersInRadar = true
                     self.beeScene.bee!.physicsBody?.affectedByGravity = true
                 }
             }
@@ -81,6 +84,7 @@ class GameViewModel: ObservableObject {
                 if dialogIndex == 1 {
                     self.beeScene.spawnFirstFlowers(openedFlowersPositionList: currentStage.openedFlowersPositionList, closedFlowersPositionList: currentStage.closedFlowersPositionList)
                     self.isGoalDisplayed = true
+                    self.showFlowersInRadar = true
                     self.beeScene.bee!.physicsBody?.affectedByGravity = true
                 }
             }

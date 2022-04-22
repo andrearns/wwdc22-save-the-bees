@@ -10,6 +10,14 @@ import SpriteKit
 
 class ClosedFlowerNode: SKSpriteNode {
     
+    var hasBeenPollinated: Bool = false {
+        didSet {
+            if hasBeenPollinated {
+                self.texture = SKTexture(imageNamed: "redFlowerSprite")
+            }
+        }
+    }
+    
     init(xPosition: CGFloat, yPosition: CGFloat, scale: CGFloat) {
         super.init(texture: SKTexture(imageNamed: "closedFlowerSprite"), color: .clear, size: CGSize(width: 60, height: 60))
         
