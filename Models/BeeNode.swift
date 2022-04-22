@@ -33,8 +33,9 @@ class BeeNode: SKSpriteNode {
     init(xPosition: CGFloat, yPosition: CGFloat) {
         
         pollenNode = SKShapeNode(rect: CGRect(x: 0, y: 0, width: 16, height: 16), cornerRadius: 8)
-        pollenNode.fillColor = UIColor(Color.beeRed)
-        pollenNode.strokeColor = UIColor(Color.beeRed)
+        pollenNode.fillColor = UIColor(Color.beePollenYellow)
+        pollenNode.lineWidth = 2
+        pollenNode.strokeColor = UIColor(Color.beeYellow)
         pollenNode.alpha = 0
         pollenNode.position.x = xPosition
         pollenNode.position.y = yPosition

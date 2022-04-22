@@ -15,4 +15,5 @@ extension Color {
     static let beeRed = Color(red: 255/255, green: 0/255, blue: 84/255)
     static let beeBlueSky = Color(red: 179/255, green: 231/255, blue: 252/255)
     static let beeGrassGreen = Color(red: 173/255, green: 205/255, blue: 82/255)
+    static let beePollenYellow = Color(red: 245/255, green: 206/255, blue: 46/255)
 }

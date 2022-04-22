@@ -47,7 +47,6 @@ class BeeScene: SKScene, SKPhysicsContactDelegate {
     
     // Actions
     private var flyingAnimation: SKAction!
-    private let blinkAction = SKAction.repeatForever(SKAction.sequence([SKAction.fadeAlpha(to: 0.6, duration: 0.6), SKAction.fadeAlpha(to: 1, duration: 0.6)]))
     private let radarFlowersBlinkAction = SKAction.repeatForever(SKAction.sequence([SKAction.fadeAlpha(to: 1, duration: 0.8), SKAction.fadeAlpha(to: 0, duration: 0.8)]))
     
     
@@ -84,17 +83,19 @@ class BeeScene: SKScene, SKPhysicsContactDelegate {
     
     // MARK: - Scene update
     override func update(_ currentTime: TimeInterval) {
-        if let accelerometerData = motionManager.accelerometerData {
-            if let currentVelocity = bee!.physicsBody?.velocity {
-                if self.gameViewModel!.isDangerous {
-                    physicsWorld.gravity = CGVector(dx: -accelerometerData.acceleration.x * 2, dy: -accelerometerData.acceleration.y * 2)
-                } else {
-                    physicsWorld.gravity = CGVector(dx: accelerometerData.acceleration.x * 2, dy: accelerometerData.acceleration.y * 2)
+        if !gameViewModel!.isGamePaused {
+            if let accelerometerData = motionManager.accelerometerData {
+                if let currentVelocity = bee!.physicsBody?.velocity {
+                    if self.gameViewModel!.isDangerous {
+                        physicsWorld.gravity = CGVector(dx: -accelerometerData.acceleration.x * 2, dy: -accelerometerData.acceleration.y * 2)
+                    } else {
+                        physicsWorld.gravity = CGVector(dx: accelerometerData.acceleration.x * 2, dy: accelerometerData.acceleration.y * 2)
+                    }
+                    
+                    self.bee!.zRotation = currentVelocity.angleRadians() - CGFloat.pi/2
+                    self.bee!.lastFacingDirection = currentVelocity
+                    self.bee?.pollenNode.zRotation = currentVelocity.angleRadians() - CGFloat.pi/2
                 }
-                
-                self.bee!.zRotation = currentVelocity.angleRadians() - CGFloat.pi/2
-                self.bee!.lastFacingDirection = currentVelocity
-                self.bee?.pollenNode.zRotation = currentVelocity.angleRadians() - CGFloat.pi/2
             }
         }
         
@@ -233,11 +234,9 @@ class BeeScene: SKScene, SKPhysicsContactDelegate {
             if gameViewModel!.isDangerous {
                 radarNode.alpha = 0
                 dangerRadarNode.alpha = 1
-                dangerRadarNode.run(blinkAction)
             } else {
                 radarNode.alpha = 1
                 dangerRadarNode.alpha = 0
-                dangerRadarNode.removeAllActions()
             }
             
             if openedFlowerNodeList.count > 0 {
@@ -410,19 +409,27 @@ class BeeScene: SKScene, SKPhysicsContactDelegate {
                 if totalDistance >= 1200 {
                     print("Player has learned how to fly")
                     completeTask()
+                    showDarkOverlay()
+                    bee?.physicsBody?.affectedByGravity = false
+                    self.gameViewModel?.isGamePaused = true
                 }
             }
         }
         else if gameViewModel?.dialogIndex == 4 {
             //  Player need to find a flower with pollen
+            bee?.physicsBody?.affectedByGravity = true
+            hideDarkOverlay()
             if bee!.hasPollen {
+                showDarkOverlay()
                 completeTask()
             }
         }
         else if gameViewModel?.dialogIndex == 6 {
             //  Player need to pollinate closed flower
+            bee?.physicsBody?.affectedByGravity = true
             if gameViewModel!.flowersPollinated > 0 {
                 completeTask()
+                self.gameViewModel?.isRadarOn = false
             }
         }
     }
@@ -431,6 +438,9 @@ class BeeScene: SKScene, SKPhysicsContactDelegate {
         //  Stage 2 tasks validation running
         if gameViewModel?.flowersPollinated == gameViewModel?.currentStage.pollinationGoal && gameViewModel?.dialogIndex == 4 {
             completeTask()
+            showDarkOverlay()
+            gameViewModel?.isRadarOn = false
+            gameViewModel?.isGoalDisplayed = false
         }
     }
     
@@ -438,12 +448,19 @@ class BeeScene: SKScene, SKPhysicsContactDelegate {
         //  Stage 3 tasks validation running
         if gameViewModel?.flowersPollinated == gameViewModel?.currentStage.pollinationGoal && gameViewModel?.dialogIndex == 2 {
             completeTask()
+            showDarkOverlay()
+            gameViewModel?.isRadarOn = false
+            gameViewModel?.isGoalDisplayed = false
         }
     }
     
     private func completeTask() {
         self.gameViewModel?.currentStage.dialogList[self.gameViewModel!.dialogIndex].isDone = true
         self.gameViewModel?.dialogIndex += 1
+        bee?.physicsBody?.affectedByGravity = false
+        bee?.physicsBody?.velocity = CGVector(dx: 0, dy: 0)
+        bee?.physicsBody?.angularVelocity = 0
+        self.gameViewModel?.isGamePaused = true
     }
     
     // MARK: - Bee animation

@@ -23,8 +23,9 @@ class FlowerNode: SKSpriteNode {
     init(xPosition: CGFloat, yPosition: CGFloat, hasPollen: Bool, scale: CGFloat, categoryBitMask: UInt32) {
         self.hasPollen = hasPollen
         pollenNode = SKShapeNode(rect: CGRect(x: 0, y: 0, width: 16, height: 16), cornerRadius: 8)
-        pollenNode.fillColor = UIColor(Color.beeRed)
-        pollenNode.strokeColor = UIColor(Color.beeRed)
+        pollenNode.fillColor = UIColor(Color.beePollenYellow)
+        pollenNode.strokeColor = UIColor(Color.beeYellow)
+        pollenNode.lineWidth = 2
         pollenNode.position.x = 40
         pollenNode.position.y = 40
         pollenNode.physicsBody?.affectedByGravity = false

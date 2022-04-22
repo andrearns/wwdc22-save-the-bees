@@ -22,6 +22,7 @@ class GameViewModel: ObservableObject {
     @Published var isDangerous: Bool = false
     @Published var isGoalDisplayed: Bool = false
     @Published var isGameOn = true
+    @Published var isGamePaused = false
     @Published var dialogIndex = 0
     @Published var flowersPollinated = 0
 
@@ -57,6 +58,7 @@ class GameViewModel: ObservableObject {
             if currentStageIndex == 1 {
                 if dialogIndex == 0 {
                     self.beeScene.bee!.physicsBody?.affectedByGravity = true
+                    isGamePaused = false
                 } else if dialogIndex == 2 {
                     withAnimation {
                         isRadarOn = true
@@ -67,6 +69,12 @@ class GameViewModel: ObservableObject {
                 } else if dialogIndex == 3 {
                     withAnimation {
                         self.beeScene.hideDarkOverlay()
+                        isGamePaused = false
+                    }
+                } else if dialogIndex == 5 {
+                    withAnimation {
+                        self.beeScene.hideDarkOverlay()
+                        isGamePaused = false
                     }
                 }
             }
@@ -77,6 +85,7 @@ class GameViewModel: ObservableObject {
                     self.isGoalDisplayed = true
                     self.showFlowersInRadar = true
                     self.beeScene.bee!.physicsBody?.affectedByGravity = true
+                    isGamePaused = false
                 }
             }
             // STAGE 3
@@ -86,6 +95,7 @@ class GameViewModel: ObservableObject {
                     self.isGoalDisplayed = true
                     self.showFlowersInRadar = true
                     self.beeScene.bee!.physicsBody?.affectedByGravity = true
+                    isGamePaused = false
                 }
             }
             dialogIndex += 1
@@ -96,6 +106,7 @@ class GameViewModel: ObservableObject {
             } else {
                 isDialogOn = false
                 showFinalView()
+                self.beeScene.hideDarkOverlay()
             }
             
             currentStageIndex += 1
