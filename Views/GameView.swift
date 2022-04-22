@@ -31,10 +31,7 @@ struct GameView: View {
                             gameViewModel.dialogTapHandle()
                         }
                 } else {
-                    // Remember to remove the closure
-                    TaskView(dialog: $gameViewModel.currentStage.dialogList[gameViewModel.dialogIndex]) {
-                        gameViewModel.dialogIndex += 1
-                    }
+                    TaskView(dialog: $gameViewModel.currentStage.dialogList[gameViewModel.dialogIndex])
                 }
                 
                 NavigationLink("", isActive: $gameViewModel.showNextStage) {
@@ -45,11 +42,11 @@ struct GameView: View {
                 HStack {
                     Spacer()
                     VStack {
-                        RadarView(gameViewModel: self.gameViewModel, width: radarWidth, isDangerous: gameViewModel.isDangerous, openFlowersPositionList: gameViewModel.currentStage.openedFlowersPositionList)
-                        
                         if gameViewModel.currentStageIndex > 1 && gameViewModel.isGoalDisplayed {
                             FlowerGoalView(currentCount: $gameViewModel.flowersPollinated, goal: gameViewModel.currentStage.pollinationGoal!, maxWidth: radarWidth)
                                 .padding(.top)
+                                .padding(.top, gameViewModel.beeScene.radarWidth)
+                                .padding(20)
                         }
                     }
                 }

@@ -9,8 +9,6 @@ import SwiftUI
 
 struct TaskView: View {
     @Binding var dialog: Dialog
-    // Remember to remove this
-    var onTap: () -> ()
     
     var body: some View {
         ZStack {
@@ -58,9 +56,5 @@ struct TaskView: View {
         }
         .padding()
         .frame(maxHeight: 200)
-        // Remember to remove this
-        .onTapGesture {
-            onTap()
-        }
     }
 }

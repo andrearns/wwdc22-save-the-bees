@@ -130,15 +130,15 @@ class GameViewModel: ObservableObject {
     
     // MARK: - Sound
     func playInitialSound() {
-//        if let path = Bundle.main.path(forResource: "SoundIntro-WWDC22", ofType: "mp3") {
-//            do {
-//                self.audioPlayer = try AVAudioPlayer(contentsOf: URL(fileURLWithPath: path))
-//                self.audioPlayer?.play()
-//                self.audioPlayer?.numberOfLoops = 100
-//            } catch {
-//                print("Error")
-//            }
-//        }
+        if let path = Bundle.main.path(forResource: "SoundIntro-WWDC22", ofType: "mp3") {
+            do {
+                self.audioPlayer = try AVAudioPlayer(contentsOf: URL(fileURLWithPath: path))
+                self.audioPlayer?.play()
+                self.audioPlayer?.numberOfLoops = 100
+            } catch {
+                print("Error")
+            }
+        }
     }
     
     func stopInitialSound() {
