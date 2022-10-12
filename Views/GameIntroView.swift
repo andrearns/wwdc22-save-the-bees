@@ -39,9 +39,3 @@ struct GameIntroView: View {
         .frame(maxHeight: UIScreen.main.bounds.height)
     }
 }
-
-//struct GameIntroView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        GameIntroView()
-//    }
-//}

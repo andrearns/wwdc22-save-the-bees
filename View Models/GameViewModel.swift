@@ -66,12 +66,12 @@ class GameViewModel: ObservableObject {
                         self.beeScene.spawnFirstFlowers(openedFlowersPositionList: currentStage.openedFlowersPositionList, closedFlowersPositionList: currentStage.closedFlowersPositionList)
                         self.beeScene.showDarkOverlay()
                     }
-                } else if dialogIndex == 3 {
+                } else if dialogIndex == 4 {
                     withAnimation {
                         self.beeScene.hideDarkOverlay()
                         isGamePaused = false
                     }
-                } else if dialogIndex == 5 {
+                } else if dialogIndex == 6 {
                     withAnimation {
                         self.beeScene.hideDarkOverlay()
                         isGamePaused = false
@@ -145,15 +145,15 @@ class GameViewModel: ObservableObject {
     
     // MARK: - Sound
     func playInitialSound() {
-        if let path = Bundle.main.path(forResource: "SoundIntro-WWDC22", ofType: "mp3") {
-            do {
-                self.audioPlayer = try AVAudioPlayer(contentsOf: URL(fileURLWithPath: path))
-                self.audioPlayer?.play()
-                self.audioPlayer?.numberOfLoops = 100
-            } catch {
-                print("Error")
-            }
-        }
+//        if let path = Bundle.main.path(forResource: "SoundIntro-WWDC22", ofType: "mp3") {
+//            do {
+//                self.audioPlayer = try AVAudioPlayer(contentsOf: URL(fileURLWithPath: path))
+//                self.audioPlayer?.play()
+//                self.audioPlayer?.numberOfLoops = 100
+//            } catch {
+//                print("Error")
+//            }
+//        }
     }
     
     func stopInitialSound() {

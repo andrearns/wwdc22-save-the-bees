@@ -13,13 +13,13 @@ class StageBank {
     
     var stageList: [Stage] = []
     
-    private init() {
+    init() {
         self.stageList = [
             Stage(
                 title: "Stage 1",
                 subtitle: "First day at work",
                 index: 1,
-                beeScene: SKScene(fileNamed: "Scene1") as! BeeScene,
+                beeScene: SKScene(fileNamed: "SceneOne") as! BeeScene,
                 dialogList: DialogBank.shared.firstStageDialogList,
                 rect: CGRect(x: -960, y: -960, width: 1920, height: 1920),
                 openedFlowersPositionList: FlowerPositionsBank.shared.firstStageOpenedFlowersPositionList,
@@ -29,7 +29,7 @@ class StageBank {
                 title: "Stage 2",
                 subtitle: "Entering the danger zone",
                 index: 2,
-                beeScene: SKScene(fileNamed: "Scene2") as! BeeScene,
+                beeScene: SKScene(fileNamed: "SceneTwo") as! BeeScene,
                 dialogList: DialogBank.shared.secondStageDialogList,
                 rect: CGRect(x: -1660, y: -1660, width: 3320, height: 3320),
                 pollinationGoal: 3,
@@ -40,7 +40,7 @@ class StageBank {
                 title: "Stage 3",
                 subtitle: "Colorful world",
                 index: 3,
-                beeScene: SKScene(fileNamed: "Scene3") as! BeeScene,
+                beeScene: SKScene(fileNamed: "SceneThree") as! BeeScene,
                 dialogList: DialogBank.shared.thirdStageDialogList,
                 rect: CGRect(x: -1660, y: -1660, width: 3320, height: 3320),
                 pollinationGoal: 6,

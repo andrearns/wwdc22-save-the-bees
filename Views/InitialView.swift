@@ -1,8 +1,8 @@
 //
-//  SwiftUIView.swift
-//  
+//  InitialView.swift
+//  Save the Bees
 //
-//  Created by André Arns on 14/04/22.
+//  Created by André Arns on 23/04/22.
 //
 
 import SwiftUI
@@ -113,9 +113,3 @@ struct InitialView: View {
         }
     }
 }
-
-//struct InitialView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        InitialView()
-//    }
-//}

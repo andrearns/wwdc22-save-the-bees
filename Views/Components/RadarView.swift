@@ -55,16 +55,3 @@ struct RadarView: View {
         .padding(.top)
     }
 }
-
-//struct RadarView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        RadarView(
-//            width: 320,
-//            isDangerous: false,
-//            beePosition: CGPoint(x: 0, y: 0),
-//            openFlowersPositionList: [
-//                CGPoint(x: 0, y: 0)
-//            ]
-//        )
-//    }
-//}

@@ -27,7 +27,13 @@ let package = Package(
                 .phone
             ],
             supportedInterfaceOrientations: [
-                .portrait
+                .portrait,
+                .landscapeRight,
+                .landscapeLeft,
+                .portraitUpsideDown(.when(deviceFamilies: [.pad]))
+            ],
+            capabilities: [
+                .motion(purposeString: "Unknown Usage Descriptionkkk")
             ]
         )
     ],
@@ -36,7 +42,9 @@ let package = Package(
             name: "AppModule",
             path: ".",
             resources: [
-                .process("Resources")
+                .process("SceneOne.sks"),
+                .process("SceneTwo.sks"),
+                .process("SceneThree.sks"),
             ]
         )
     ]

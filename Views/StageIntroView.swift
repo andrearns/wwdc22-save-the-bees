@@ -1,8 +1,8 @@
 //
-//  IntroView.swift
-//  WWDC22
+//  StageIntroView.swift
+//  Save the Bees
 //
-//  Created by André Arns on 15/04/22.
+//  Created by André Arns on 23/04/22.
 //
 
 import SwiftUI
@@ -59,9 +59,3 @@ struct StageIntroView: View {
         }
     }
 }
-
-//struct StageIntroView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        StageIntroView(title: "Stage 1", description: "First day at work")
-//    }
-//}

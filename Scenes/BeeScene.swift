@@ -415,7 +415,7 @@ class BeeScene: SKScene, SKPhysicsContactDelegate {
                 }
             }
         }
-        else if gameViewModel?.dialogIndex == 4 {
+        else if gameViewModel?.dialogIndex == 5 {
             //  Player need to find a flower with pollen
             bee?.physicsBody?.affectedByGravity = true
             hideDarkOverlay()
@@ -424,7 +424,7 @@ class BeeScene: SKScene, SKPhysicsContactDelegate {
                 completeTask()
             }
         }
-        else if gameViewModel?.dialogIndex == 6 {
+        else if gameViewModel?.dialogIndex == 7 {
             //  Player need to pollinate closed flower
             bee?.physicsBody?.affectedByGravity = true
             if gameViewModel!.flowersPollinated > 0 {

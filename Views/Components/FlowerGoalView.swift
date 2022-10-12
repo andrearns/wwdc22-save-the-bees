@@ -33,9 +33,3 @@ struct FlowerGoalView: View {
         .frame(maxWidth: maxWidth)
     }
 }
-
-//struct FlowerGoalView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        FlowerGoalView(currentCount: 4, goal: 10, maxWidth: 200)
-//    }
-//}
